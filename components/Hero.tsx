@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { MousePointer2, Zap, Smartphone, ChevronRight, Info, ShieldCheck, ChevronDown, Activity, Loader2, Target, AlertTriangle, Map, ShieldAlert, Fingerprint, Eye, Binary, Search, CheckCircle2, ShieldX, Map as MapIcon, Gauge, Terminal, Radio } from 'lucide-react';
 import { RegistryDoc } from './OperationalRegistry';
@@ -267,7 +268,7 @@ const TypingHeadline = ({ text, delay = 500, startTrigger = true }: { text: stri
     }
   }, [displayedText, isTyping, text]);
   return (
-    <h1 className="text-[2.5rem] md:text-[7.5rem] font-black tracking-tighter leading-[0.8] uppercase italic select-none min-h-[1em] relative">
+    <h1 className="text-[2.25rem] md:text-[4.5rem] font-black tracking-tighter leading-[0.8] uppercase italic select-none min-h-[1em] relative">
       <span className="absolute inset-0 text-transparent pointer-events-none" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.25)' }}>{text}</span>
       <span className="relative text-white">{displayedText}</span>
     </h1>
@@ -304,7 +305,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                 <div className="flex items-center gap-4">
                   <button onClick={onOpenBriefing} className="relative group active:scale-95 transition-all duration-300">
                     <div className="absolute inset-0 bg-blue-500/30 rounded-full animate-radar-pulse" />
-                    <div className="relative px-6 py-2.5 bg-black border border-blue-500/60 rounded-full flex items-center gap-3 shadow-[0_0_20px_rgba(59,130,246,0.4)] group-hover:border-blue-400 animate-button-breathe">
+                    <div className="relative px-6 py-2.5 bg-black border border-blue-500/60 rounded-full flex items-center gap-3 shadow-[0_0_20px_rgba(37,99,235,0.3)] group-hover:border-blue-400 animate-button-breathe">
                       <Zap size={14} className="text-blue-400 fill-blue-400/20" />
                       <span className="text-[9px] font-black text-white uppercase tracking-[0.4em] italic">Mission Briefing</span>
                     </div>
@@ -320,7 +321,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                 </div>
               </div>
               <div className="space-y-2">
-                <h1 className="text-[2.5rem] md:text-[7.5rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
+                <h1 className="text-[2.25rem] md:text-[4.5rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
                 <TypingHeadline text="VALIDATOR." startTrigger={isReady} />
               </div>
               <div className="pt-6 space-y-8 max-w-2xl">
