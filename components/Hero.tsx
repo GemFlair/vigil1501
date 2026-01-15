@@ -268,7 +268,7 @@ const TypingHeadline = ({ text, delay = 500, startTrigger = true }: { text: stri
     }
   }, [displayedText, isTyping, text]);
   return (
-    <h1 className="text-[2.25rem] md:text-[4rem] font-black tracking-tighter leading-[0.8] uppercase italic select-none min-h-[1em] relative">
+    <h1 className="text-[2.25rem] md:text-[4.4rem] font-black tracking-tighter leading-[0.8] uppercase italic select-none min-h-[1em] relative">
       <span className="absolute inset-0 text-transparent pointer-events-none" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.25)' }}>{text}</span>
       <span className="relative text-white">{displayedText}</span>
     </h1>
@@ -321,7 +321,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                 </div>
               </div>
               <div className="space-y-2">
-                <h1 className="text-[2.25rem] md:text-[4rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
+                <h1 className="text-[2.25rem] md:text-[4.4rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
                 <TypingHeadline text="VALIDATOR." startTrigger={isReady} />
               </div>
               <div className="pt-6 space-y-8 max-w-2xl">
