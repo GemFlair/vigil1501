@@ -321,7 +321,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                 </div>
               </div>
               <div className="space-y-2">
-                <h1 className="text-[2.25rem] md:text-[3.6rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
+                <h1 className="text-[2.25rem] md:text-[3.2rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic select-none">THE INTENT</h1>
                 <TypingHeadline text="VALIDATOR." startTrigger={isReady} />
               </div>
               <div className="pt-6 space-y-8 max-w-2xl">
