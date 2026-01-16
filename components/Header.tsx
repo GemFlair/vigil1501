@@ -137,7 +137,8 @@ export const Header: React.FC<HeaderProps> = ({
     }
   }, [activeAnchor, viewMode]);
 
-  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
+  // Use identical isRealWallet check as App.tsx
+  const isRealWallet = !!wallet && !isGuest && !wallet.includes("SIM_NODE") && !wallet.includes("VISITOR_NODE");
 
   return (
     <aside id="tour-sidebar-nav" className={`fixed inset-x-0 bottom-0 top-10 z-[100] bg-[#050505] md:relative md:top-0 md:h-full w-full md:w-72 border-r border-zinc-800 transition-all duration-500 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
@@ -154,23 +155,30 @@ export const Header: React.FC<HeaderProps> = ({
               <button onClick={() => setIsMenuOpen(false)} className="md:hidden text-zinc-400 p-2"><X className="w-6 h-6" /></button>
             </div>
 
-            {/* Mobile-Only Identity Button in Sidebar - Shows address if connected */}
-            <button 
-              onClick={() => { onConnectWallet?.(); setIsMenuOpen(false); }}
-              className={`md:hidden w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-2 group transition-all ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
-            >
-              {wallet ? (
-                <>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
-                  <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
-                </>
-              ) : (
-                <>
-                  <Wallet size={14} className="group-hover:scale-110 transition-transform" /> 
-                  CONNECT_IDENTITY
-                </>
+            {/* Mobile-Only Identity Button in Sidebar - Synchronized with Desktop HUD */}
+            <div className="md:hidden flex flex-col items-center">
+              <button 
+                onClick={() => { onConnectWallet?.(); setIsMenuOpen(false); }}
+                className={`w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-1 group transition-all ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
+              >
+                {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
+                  <>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
+                    <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                  </>
+                ) : (
+                  <>
+                    <Wallet size={14} className="group-hover:scale-110 transition-transform" /> 
+                    CONNECT_IDENTITY
+                  </>
+                )}
+              </button>
+              {wallet && (
+                <span className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">
+                  {isRealWallet ? 'SECURE_NODE_SYNCED' : 'VISITOR_UNSYNCED'}
+                </span>
               )}
-            </button>
+            </div>
             
             <div id="tour-bri-dash" className="mt-1 relative">
               <TacticalHUD bri={bri} xp={xp} rank={rank} level={releasePhase} onOpenMap={onOpenMap} />

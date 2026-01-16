@@ -39,7 +39,8 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
     try {
       if (type === 'SIMULATED') {
         await runHandshake('VIRTUAL');
-        onClose("VIG1SimulatedNode8821xPoisoN7729110028x992211", false);
+        // Distinct prefix to help App.tsx identify it as a simulation
+        onClose("VIG1_SIM_NODE_8821xPoisoN7729110028x992211", false);
         return;
       }
       
@@ -77,13 +78,31 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
       // Dramatic finish
       await runHandshake(type);
       
-      const walletAddr = resp.publicKey ? resp.publicKey.toString() : resp.toString();
+      // Robust address extraction for Solana providers
+      let walletAddr = '';
+      if (resp && resp.publicKey) {
+        walletAddr = resp.publicKey.toString();
+      } else if (typeof resp === 'string') {
+        walletAddr = resp;
+      } else if (resp && resp.address) {
+        walletAddr = resp.address;
+      } else {
+        // Last resort stringification check
+        walletAddr = resp.toString();
+      }
+
+      if (!walletAddr || walletAddr === '[object Object]') {
+        throw new Error("ADDRESS_EXTRACTION_FAILURE");
+      }
+
       onClose(walletAddr, false);
     } catch (err: any) {
       console.error(err);
       let msg = "HANDSHAKE_REJECTED_BY_USER";
       if (err.message === "EXTENSION_NOT_FOUND") {
         msg = isMobile ? `MOBILE_HANDSHAKE: RELAUNCHING IN ${type}...` : `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
+      } else if (err.message === "ADDRESS_EXTRACTION_FAILURE") {
+        msg = "ERROR: FAILED TO PARSE CRYPTOGRAPHIC ADDRESS";
       }
       setError(msg);
       setIsConnecting(false);

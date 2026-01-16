@@ -486,7 +486,8 @@ const App: React.FC = () => {
     }
   };
 
-  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
+  // Refined isRealWallet check: Cryptographic address required, excludes simulations and visitors
+  const isRealWallet = !!wallet && !isGuest && !wallet.includes("SIM_NODE") && !wallet.includes("VISITOR_NODE");
 
   return (
     <div className={`h-screen w-screen bg-[#020202] text-[#fafafa] selection:bg-blue-600/40 selection:text-white font-sans flex flex-col pt-10 overflow-hidden ${isPowerSave ? 'pwr-save' : ''}`}>
@@ -558,7 +559,7 @@ const App: React.FC = () => {
                   onClick={() => setIsModalOpen(true)}
                   className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
                 >
-                  {wallet ? (
+                  {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
                     <>
                       <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
                       <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>

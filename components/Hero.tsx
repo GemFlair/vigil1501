@@ -294,7 +294,8 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSave, isReady = true, onUnlockNext, unlockLevel, onFail, onOpenMap, onOpenBriefing, isAdmin = false, isTacticalMode = false, onConnectWallet, wallet, isGuest = false }) => {
   const [isSilo1Vanished, setIsSilo1Vanished] = useState(false);
 
-  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
+  // Define isRealWallet strictly for cryptographic addresses
+  const isRealWallet = !!wallet && !isGuest && !wallet.includes("SIM_NODE") && !wallet.includes("VISITOR_NODE");
 
   return (
     <section id="hero" className={`flex flex-col px-0 md:px-20 pt-8 md:pt-24 relative overflow-hidden bg-[#020202] transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isSilo1Vanished ? 'min-h-fit pb-12' : 'min-h-screen pb-24 justify-center'}`}>
@@ -344,7 +345,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                    onClick={onConnectWallet} 
                    className={`px-6 md:px-12 py-5 md:py-6 text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] transition-all shadow-[0_0_50px_rgba(59,130,246,0.3)] active:scale-95 flex items-center justify-center gap-4 rounded-none group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
                  >
-                   {wallet ? (
+                   {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
                      <>
                         <div className={`w-2 h-2 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-blue-400'}`} />
                         <span className="font-mono">{wallet.slice(0, 8)}...{wallet.slice(-8)}</span>
@@ -361,7 +362,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                </div>
                <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left duration-1000 delay-500">
                   <div className="flex items-center gap-3"><Terminal size={14} className="text-zinc-600" /><span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em]">Protocol Operating Standards</span></div>
-                  <div className="space-y-3 font-mono text-[9px] md:text-[11px] text-zinc-400 font-bold leading-relaxed uppercase">
+                  <div className="space-y-3 font-mono text-[9px] md:text-[11px] text-zinc-400 font-bold uppercase">
                      <p className="flex items-start gap-3"><span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />Intent Synchronization: Decoupling perception from malicious UI shifts</p>
                      <p className="flex items-start gap-3"><span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />Sub-Frame Autopsy: Heuristic analysis at the retinal threshold</p>
                      <p className="flex items-start gap-3"><span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />Sovereign Context: Local mapping with absolute zero data leakage</p>
