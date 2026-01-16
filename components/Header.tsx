@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, Users, AlertOctagon, Activity, Layers, 
@@ -277,6 +278,7 @@ export const Header: React.FC<HeaderProps> = ({
             </form>
           </div>
           <div className="grid grid-cols-2 gap-2">
+            {/* Fixed: Changed 'cancelHold' to 'cancelPurgeHold' in onMouseLeave and onTouchEnd */}
             <button id="tour-hold-purge" onMouseDown={startPurgeHold} onMouseUp={cancelPurgeHold} onMouseLeave={cancelPurgeHold} onTouchStart={startPurgeHold} onTouchEnd={cancelPurgeHold} className="relative py-3 px-4 rounded-xl border border-red-900/40 bg-red-900/5 text-red-600 text-[8px] font-black uppercase tracking-widest hover:bg-red-900/20 hover:text-red-400 transition-all flex items-center justify-center gap-2 shadow-inner overflow-hidden group/purge">
               <div className="absolute top-0 left-0 bottom-0 bg-red-600/20 transition-all duration-75 pointer-none" style={{ width: `${purgeHold}%` }} />
               <Trash2 size={10} className="relative z-10" /> 

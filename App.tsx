@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List, Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { Header } from './components/Header';
 import { SecurityAnnouncementBar } from './components/SecurityAnnouncementBar';
 import { SecurityModal } from './components/SecurityModal';
+import { IdentitySelectionModal } from './components/IdentitySelectionModal';
 import { Hero } from './components/Hero';
 import { HowItWorks } from './components/HowItWorks';
 import { Problem } from './components/Problem';
@@ -58,6 +60,7 @@ export type ViewMode = 'NARRATIVE' | 'TACTICAL';
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(() => !localStorage.getItem('vigil_node_acknowledged'));
+  const [isIdentitySelectionOpen, setIsIdentitySelectionOpen] = useState(false);
   const [isBooting, setIsBooting] = useState(false);
   const [hasAcknowledged, setHasAcknowledged] = useState(() => !!localStorage.getItem('vigil_node_acknowledged'));
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('vigil_user_is_guest') === 'true');
@@ -211,6 +214,7 @@ const App: React.FC = () => {
     if (scrollContainerRef.current && viewMode === 'NARRATIVE') {
       const { scrollHeight, clientHeight } = scrollContainerRef.current;
       isProgrammaticScrollRef.current = true;
+      // Fixed: Changed 'percentage' to 'percent' to match the parameter name
       targetScrollTopRef.current = (percent / 100) * (scrollHeight - clientHeight);
     }
   };
@@ -331,7 +335,7 @@ const App: React.FC = () => {
               onOpenBriefing={() => setIsBriefingOpen(true)}
               isAdmin={isAdmin}
               isTacticalMode={true}
-              onConnectWallet={() => setIsModalOpen(true)}
+              onConnectWallet={() => setIsIdentitySelectionOpen(true)}
               wallet={wallet}
               isGuest={isGuest}
             />
@@ -513,6 +517,16 @@ const App: React.FC = () => {
         setIsBooting(true);
       }} />
 
+      <IdentitySelectionModal 
+        isOpen={isIdentitySelectionOpen} 
+        onClose={() => setIsIdentitySelectionOpen(false)}
+        onConnect={(walletAddr) => {
+          setWallet(walletAddr);
+          setIsGuest(false);
+          setIsIdentitySelectionOpen(false);
+        }}
+      />
+
       {isBooting && (
         <SystemBoot onComplete={handleCalibrationComplete} skipGame={isGuest} />
       )}
@@ -567,7 +581,7 @@ const App: React.FC = () => {
              <div className="flex flex-col items-end group/id">
                 <div className="flex items-center gap-2 relative">
                    <button 
-                     onClick={wallet ? handleDisconnect : () => setIsModalOpen(true)}
+                     onClick={wallet ? handleDisconnect : () => setIsIdentitySelectionOpen(true)}
                      className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
                    >
                      {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
@@ -647,7 +661,7 @@ const App: React.FC = () => {
           setViewMode={setViewMode}
           wallet={wallet}
           isGuest={isGuest}
-          onConnectWallet={() => setIsModalOpen(true)}
+          onConnectWallet={() => setIsIdentitySelectionOpen(true)}
           onDisconnectWallet={handleDisconnect}
         />
         
@@ -675,7 +689,7 @@ const App: React.FC = () => {
                   onOpenMap={() => setIsTopologyOpen(true)}
                   onOpenBriefing={() => setIsBriefingOpen(true)}
                   isAdmin={isAdmin}
-                  onConnectWallet={() => setIsModalOpen(true)}
+                  onConnectWallet={() => setIsIdentitySelectionOpen(true)}
                   wallet={wallet}
                   isGuest={isGuest}
                 />
