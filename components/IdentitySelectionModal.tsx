@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, HelpCircle, ChevronRight, Smartphone, Zap, ShieldAlert, Download, Loader2, Target, Cpu, Wifi } from 'lucide-react';
+import { X, HelpCircle, ChevronRight, Smartphone, Zap, ShieldAlert, Loader2, Cpu, Wifi, Fingerprint, ShieldCheck, ChevronLeft } from 'lucide-react';
 
 interface IdentitySelectionModalProps {
   isOpen: boolean;
@@ -8,6 +8,7 @@ interface IdentitySelectionModalProps {
 }
 
 export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ isOpen, onClose, onConnect }) => {
+  const [view, setView] = useState<'LIST' | 'INFO'>('LIST');
   const [detected, setDetected] = useState<{ phantom: boolean; solflare: boolean }>({
     phantom: false,
     solflare: false
@@ -19,6 +20,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
   useEffect(() => {
     if (!isOpen) {
       setIsLinking(null);
+      setView('LIST');
       setLinkingStatus('INITIALIZING_HANDSHAKE');
     }
   }, [isOpen]);
@@ -89,22 +91,29 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
         
         {/* MODAL HEADER */}
         <div className="flex items-center justify-between p-8 border-b border-zinc-900 bg-gradient-to-b from-white/[0.02] to-transparent">
-          <button className="text-zinc-600 hover:text-zinc-300 transition-colors">
-            <HelpCircle size={18} strokeWidth={1.5} />
+          <button 
+            onClick={() => setView(view === 'LIST' ? 'INFO' : 'LIST')}
+            className="text-zinc-600 hover:text-zinc-300 transition-colors"
+          >
+            {view === 'LIST' ? <HelpCircle size={18} strokeWidth={1.5} /> : <ChevronLeft size={18} strokeWidth={1.5} />}
           </button>
           <div className="flex flex-col items-center">
-             <span className="text-[8px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">Identity Protocol</span>
-             <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase italic">Identity_Link_Portal</h3>
+             <span className="text-[8px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">
+               {view === 'LIST' ? 'Identity Protocol' : 'VIGIL_KNOWLEDGE_BASE'}
+             </span>
+             <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase italic">
+               {view === 'LIST' ? 'Identity_Link_Portal' : 'SOVEREIGN_INTEL_ACCESS'}
+             </h3>
           </div>
           <button onClick={onClose} className="text-zinc-600 hover:text-white transition-colors">
             <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
-        {/* WALLET LIST / LOADING AREA */}
-        <div className="p-4 space-y-1">
+        {/* CONTENT AREA */}
+        <div className="p-4 min-h-[360px] flex flex-col">
           {isLinking ? (
-            <div className="py-24 flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in duration-300">
+            <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in duration-300">
                <div className="relative">
                   <div className="w-20 h-20 rounded-3xl bg-blue-600/5 border border-blue-500/20 flex items-center justify-center">
                     <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
@@ -120,8 +129,52 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   </div>
                </div>
             </div>
+          ) : view === 'INFO' ? (
+            <div className="flex-1 space-y-6 p-4 animate-in slide-in-from-left-4 duration-500">
+               {/* SECTION 1: IDENT_HANDSHAKE */}
+               <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                     <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-blue-500">
+                        <Fingerprint size={16} />
+                     </div>
+                     <h4 className="text-[10px] font-black text-white uppercase tracking-widest">[IDENT_HANDSHAKE]</h4>
+                  </div>
+                  <div className="pl-11">
+                     <p className="text-[11px] font-bold text-white mb-1 uppercase italic tracking-tight">What is an Identity Link?</p>
+                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">It establishes a secure bridge between your visual intent and the cryptographic signature. VIGIL monitors this pipeline to ensure the address you see is the one you sign.</p>
+                  </div>
+               </div>
+
+               {/* SECTION 2: LOCAL_SANDBOX */}
+               <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                     <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-emerald-500">
+                        <ShieldCheck size={16} />
+                     </div>
+                     <h4 className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">[LOCAL_SANDBOX]</h4>
+                  </div>
+                  <div className="pl-11">
+                     <p className="text-[11px] font-bold text-white mb-1 uppercase italic tracking-tight">Is my data monitored?</p>
+                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">No. VIGIL utilizes local-only heuristics. Your interaction history remains isolated within your browser's IndexedDB. We have zero visibility into your private keys or session tokens.</p>
+                  </div>
+               </div>
+
+               {/* SECTION 3: RETINAL_THRESHOLD */}
+               <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                     <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-amber-500">
+                        <Zap size={16} />
+                     </div>
+                     <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-widest">[RETINAL_THRESHOLD]</h4>
+                  </div>
+                  <div className="pl-11">
+                     <p className="text-[11px] font-bold text-white mb-1 uppercase italic tracking-tight">Why establish a link?</p>
+                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">To neutralize the 8-character blind spot. Adversaries exploit visual shortcuts; Establishing a link enables the Retinal Shield to flag similarity collisions in real-time.</p>
+                  </div>
+               </div>
+            </div>
           ) : (
-            <div className="space-y-2 p-2">
+            <div className="space-y-2 p-2 animate-in fade-in duration-500">
               {/* PHANTOM ROW */}
               <button 
                 onClick={() => handleConnect('PHANTOM')}
@@ -140,7 +193,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   {detected.phantom ? (
                     <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded-md">
                        <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                       <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">OK</span>
+                       <span className="text-[8px] font-mono font-black text-emerald-500 uppercase tracking-widest">INSTALLED</span>
                     </div>
                   ) : (
                     <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[8px] font-black text-zinc-600 uppercase tracking-widest">ABSENT</span>
@@ -167,7 +220,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   {detected.solflare ? (
                     <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded-md">
                        <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                       <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">OK</span>
+                       <span className="text-[8px] font-mono font-black text-emerald-500 uppercase tracking-widest">INSTALLED</span>
                     </div>
                   ) : (
                     <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[8px] font-black text-zinc-600 uppercase tracking-widest">ABSENT</span>
@@ -193,7 +246,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
         </div>
 
         {/* FOOTER - PROTOCOL METADATA */}
-        <div className="p-8 border-t border-zinc-900 flex flex-col items-center gap-6">
+        <div className="p-8 border-t border-zinc-900 flex flex-col items-center gap-6 shrink-0">
            <div className="flex items-center gap-3 opacity-40">
               <div className="flex items-center gap-2">
                  <Wifi size={10} className="text-zinc-600" />
