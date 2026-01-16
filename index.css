@@ -1,0 +1,241 @@
+
+@keyframes shine {
+  from { left: -100%; }
+  to { left: 100%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes flash-red {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.2); }
+  50% { border-color: rgba(239, 68, 68, 0.5); }
+}
+
+@keyframes flowing-signal {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes shatter {
+  0% { filter: blur(20px) brightness(2); transform: scale(1.05); opacity: 0.5; }
+  100% { filter: blur(0) brightness(1); transform: scale(1); opacity: 1; }
+}
+
+@keyframes progress-scan {
+  0% { width: 0%; }
+  20% { width: 15%; }
+  50% { width: 45%; }
+  70% { width: 85%; }
+  100% { width: 100%; }
+}
+
+@keyframes text-glitch-active {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-2px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  100% { transform: translate(0); }
+}
+
+/* SYNC COLOR ENGINE */
+@keyframes sync-color-text {
+  0%, 100% { color: #3b82f6; }
+  25% { color: #06b6d4; }
+  50% { color: #a855f7; }
+  75% { color: #10b981; }
+}
+
+@keyframes sync-color-bg {
+  0%, 100% { background-color: #3b82f6; }
+  25% { background-color: #06b6d4; }
+  50% { background-color: #a855f7; }
+  75% { background-color: #10b981; }
+}
+
+@keyframes sync-color-border {
+  0%, 100% { border-color: rgba(59, 130, 246, 0.4); }
+  25% { border-color: rgba(6, 182, 212, 0.4); }
+  50% { border-color: rgba(168, 85, 247, 0.4); }
+  75% { border-color: rgba(16, 185, 129, 0.4); }
+}
+
+@keyframes status-sync-border {
+  0%, 100% { border-color: rgba(59, 130, 246, 0.1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
+  50% { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 40px rgba(59, 130, 246, 0.05); }
+}
+
+@keyframes grid-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(64px, 64px); }
+}
+
+@keyframes box-receive {
+  0%, 100% { transform: scale(1); filter: brightness(1); border-color: rgba(255,255,255,0.1); }
+  48% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.03); filter: brightness(1.4); border-color: currentColor; }
+  52% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes scan-horizontal {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes sonar {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ADVANCED TACTICAL GLASS & AMBIENT ANIMATIONS */
+@keyframes glass-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  20% { opacity: 0.5; }
+  100% { transform: translateX(200%) skewX(-15deg); opacity: 0; }
+}
+
+@keyframes ambient-pulse {
+  0%, 100% { filter: drop-shadow(0 0 10px var(--glow-color)) brightness(1); }
+  50% { filter: drop-shadow(0 0 25px var(--glow-color)) brightness(1.2); }
+}
+
+@keyframes scan-vertical {
+  0% { top: -10%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 110%; opacity: 0; }
+}
+
+@keyframes scan-line-wipe {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+/* SILO PHYSICS */
+@keyframes silo-glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes scan-sweep {
+  0% { left: -5%; }
+  100% { left: 105%; }
+}
+
+@keyframes shatter-flash { 
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.1); } 
+  25% { opacity: 1; transform: translate(-50%, -50%) scale(2); } 
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(6); } 
+}
+
+@keyframes fracture-pulse { 
+  0%, 100% { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 30px rgba(16, 185, 129, 0.2); } 
+  50% { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 80px rgba(16, 185, 129, 0.6); transform: translateZ(50px) scale(1.02); } 
+}
+
+/* MARQUEE & INTERFACE */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+
+@keyframes heartbeat {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: -100; }
+}
+
+@keyframes haptic-shake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-2px, -2px) rotate(-0.5deg); }
+  20% { transform: translate(2px, 0) rotate(0.5deg); }
+  30% { transform: translate(-2px, 2px) rotate(0deg); }
+}
+
+/* UTILITY CLASSES */
+.glass-morphism {
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+.refractive-edge {
+  position: relative;
+  overflow: hidden;
+}
+
+.refractive-edge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.refractive-edge:hover::after {
+  animation: glass-shimmer 1.5s infinite;
+}
+
+.ambient-glow-pod {
+  --glow-color: rgba(59, 130, 246, 0.5);
+  animation: ambient-pulse 4s infinite ease-in-out;
+}
+
+.animate-shatter {
+  animation: shatter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-flowing-signal {
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+  animation: flowing-signal 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-sync-color-text { animation: sync-color-text 8s infinite linear; }
+.animate-sync-color-bg { animation: sync-color-bg 8s infinite linear; }
+.animate-sync-color-border { animation: sync-color-border 8s infinite linear; }
+.animate-status-sync-border { animation: status-sync-border 4s infinite ease-in-out; }
+.animate-grid-drift { animation: grid-drift 20s linear infinite; }
+.animate-flash-red { animation: flash-red 2s infinite ease-in-out; }
+.animate-receive-orange { animation: box-receive 5s infinite; animation-delay: 2.5s; color: #f97316; }
+
+.animate-marquee { animation: marquee 30s linear infinite; }
+
+.animate-heartbeat {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: heartbeat 2s linear infinite;
+}
+
+.animate-haptic-shake {
+  animation: haptic-shake 0.15s infinite linear;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #050505; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 2px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 2px);
+  pointer-events: none;
+  z-index: 1000;
+}
