@@ -204,7 +204,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 { 
                   id: 'PHANTOM', 
                   label: 'Phantom', 
-                  icon: <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg" alt="Phantom" className="w-full h-full object-contain" />, 
+                  icon: 'https://dd.dexscreener.com/ds-data/wallets/phantom.png', 
                   color: 'group-hover:border-[#ab9ff2]/40', 
                   isDetected: detected.phantom, 
                   installUrl: 'https://phantom.app/' 
@@ -212,7 +212,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 { 
                   id: 'SOLFLARE', 
                   label: 'Solflare', 
-                  icon: <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg" alt="Solflare" className="w-full h-full object-contain" />, 
+                  icon: 'https://dd.dexscreener.com/ds-data/wallets/solflare.png', 
                   color: 'group-hover:border-orange-500/40', 
                   isDetected: detected.solflare, 
                   installUrl: 'https://solflare.com/' 
@@ -233,10 +233,10 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                          </div>
                       </div>
                     )}
-                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${typeof w.icon !== 'object' ? w.color : ''}`}>
-                      {React.isValidElement(w.icon) && w.icon.type === 'img' ? (
+                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform overflow-hidden ${typeof w.icon === 'string' ? '' : w.color}`}>
+                      {typeof w.icon === 'string' ? (
                         <div className="w-6 h-6 md:w-10 md:h-10">
-                          {w.icon}
+                           <img src={w.icon} alt={w.label} className="w-full h-full object-contain" />
                         </div>
                       ) : (
                         React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })
