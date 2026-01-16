@@ -8,6 +8,27 @@ interface SecurityModalProps {
 
 type ModalStep = 'DISCLOSURE' | 'CONNECT';
 
+// Inline Phantom Logo from asset
+const PhantomIcon = ({ size = 32 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M64 0C28.656 0 0 28.656 0 64s28.656 64 64 64 64-28.656 64-64S99.344 0 64 0zm0 110.133c-25.432 0-46.133-20.701-46.133-46.133S38.568 17.867 64 17.867s46.133 20.701 46.133 46.133-20.701 46.133-46.133 46.133z" fill="url(#p-grad)"/>
+    <path d="M85.067 53.333c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm-42.134 0c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16z" fill="#fff"/>
+    <defs>
+      <linearGradient id="p-grad" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#AB9FF2"/><stop offset="1" stopColor="#5E43F3"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+// Inline Solflare Logo from asset
+const SolflareIcon = ({ size = 32 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="20" fill="#FFEF46"/>
+    <path d="M50 20c-5.523 0-10 4.477-10 10v10h20V30c0-5.523-4.477-10-10-10zm-15 30c0-5.523 4.477-10 10-10h10v20H35c-5.523 0-10-4.477-10-10zm25 10c5.523 0 10-4.477 10-10V40H50v20h10zm15 10c0 5.523-4.477 10-10 10H55V60h10c5.523 0 10 4.477 10 10z" fill="black" transform="scale(0.8) translate(12, 12)"/>
+  </svg>
+);
+
 export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose }) => {
   const [step, setStep] = useState<ModalStep>('DISCLOSURE');
   const [isConnecting, setIsConnecting] = useState(false);
@@ -84,25 +105,14 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         ? (window as any).phantom?.solana || (window as any).solana 
         : (window as any).solflare;
 
-      if (!provider) {
-        throw new Error("EXTENSION_NOT_FOUND");
-      }
+      if (!provider) throw new Error("EXTENSION_NOT_FOUND");
 
       setHandshakeLog(`CONNECTING_TO_${type}...`);
       const resp = await provider.connect();
       
-      let walletAddr = '';
-      if (resp?.publicKey) {
-        walletAddr = resp.publicKey.toString();
-      } else if (provider.publicKey) {
-        walletAddr = provider.publicKey.toString();
-      }
+      let walletAddr = resp?.publicKey?.toString() || provider.publicKey?.toString();
+      if (!walletAddr || walletAddr === 'true') throw new Error("ADDRESS_EXTRACTION_FAILURE");
 
-      if (!walletAddr || walletAddr === 'true') {
-        throw new Error("ADDRESS_EXTRACTION_FAILURE");
-      }
-
-      // FORCE SIGNATURE REQUEST
       setHandshakeLog("AWAITING_IDENTITY_SIGNATURE...");
       const message = new TextEncoder().encode(`VIGIL_IDENTITY_SYNC: ${Date.now()}`);
       try {
@@ -116,13 +126,9 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
     } catch (err: any) {
       console.error(err);
       let msg = "HANDSHAKE_REJECTED_BY_USER";
-      if (err.message === "EXTENSION_NOT_FOUND") {
-        msg = `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
-      } else if (err.message === "ADDRESS_EXTRACTION_FAILURE") {
-        msg = "ERROR: FAILED TO PARSE CRYPTOGRAPHIC ADDRESS";
-      } else if (err.message === "SIGNATURE_REJECTED") {
-        msg = "ERROR: IDENTITY SIGNATURE REFUSED";
-      }
+      if (err.message === "EXTENSION_NOT_FOUND") msg = `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
+      else if (err.message === "ADDRESS_EXTRACTION_FAILURE") msg = "ERROR: FAILED TO PARSE CRYPTOGRAPHIC ADDRESS";
+      else if (err.message === "SIGNATURE_REJECTED") msg = "ERROR: IDENTITY SIGNATURE REFUSED";
       setError(msg);
       setIsConnecting(false);
     }
@@ -204,7 +210,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 { 
                   id: 'PHANTOM', 
                   label: 'Phantom', 
-                  icon: 'https://dd.dexscreener.com/ds-data/wallets/phantom.png', 
+                  icon: <PhantomIcon />, 
                   color: 'group-hover:border-[#ab9ff2]/40', 
                   isDetected: detected.phantom, 
                   installUrl: 'https://phantom.app/' 
@@ -212,8 +218,8 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 { 
                   id: 'SOLFLARE', 
                   label: 'Solflare', 
-                  icon: 'https://dd.dexscreener.com/ds-data/wallets/solflare.png', 
-                  color: 'group-hover:border-orange-500/40', 
+                  icon: <SolflareIcon />, 
+                  color: 'group-hover:border-[#FFEF46]/40', 
                   isDetected: detected.solflare, 
                   installUrl: 'https://solflare.com/' 
                 },
@@ -233,14 +239,8 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                          </div>
                       </div>
                     )}
-                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform overflow-hidden ${typeof w.icon === 'string' ? '' : w.color}`}>
-                      {typeof w.icon === 'string' ? (
-                        <div className="w-6 h-6 md:w-10 md:h-10">
-                           <img src={w.icon} alt={w.label} className="w-full h-full object-contain" />
-                        </div>
-                      ) : (
-                        React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })
-                      )}
+                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform overflow-hidden ${w.id === 'SOLFLARE' ? '' : 'text-zinc-600'} ${w.id === 'SIMULATED' ? 'text-emerald-500' : ''}`}>
+                      {w.icon}
                     </div>
                     <div className="space-y-0.5 md:space-y-1">
                       <span className="text-[8px] font-black text-white uppercase tracking-widest block">{w.label}</span>

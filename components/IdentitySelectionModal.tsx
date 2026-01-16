@@ -7,6 +7,28 @@ interface IdentitySelectionModalProps {
   onConnect: (wallet: string) => void;
 }
 
+// Inline Phantom Logo based on provided asset
+const PhantomIcon = () => (
+  <svg viewBox="0 0 128 128" className="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M64 0C28.656 0 0 28.656 0 64s28.656 64 64 64 64-28.656 64-64S99.344 0 64 0zm0 110.133c-25.432 0-46.133-20.701-46.133-46.133S38.568 17.867 64 17.867s46.133 20.701 46.133 46.133-20.701 46.133-46.133 46.133z" fill="url(#phantom-gradient)"/>
+    <path d="M85.067 53.333c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm-42.134 0c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16z" fill="#fff"/>
+    <defs>
+      <linearGradient id="phantom-gradient" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#AB9FF2"/>
+        <stop offset="1" stopColor="#5E43F3"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+// Inline Solflare Logo based on provided asset (Gorse Yellow + Gothic S)
+const SolflareIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="20" fill="#FFEF46"/>
+    <path d="M50 20c-5.523 0-10 4.477-10 10v10h20V30c0-5.523-4.477-10-10-10zm-15 30c0-5.523 4.477-10 10-10h10v20H35c-5.523 0-10-4.477-10-10zm25 10c5.523 0 10-4.477 10-10V40H50v20h10zm15 10c0 5.523-4.477 10-10 10H55V60h10c5.523 0 10 4.477 10 10z" fill="black" transform="scale(0.8) translate(12, 12)"/>
+  </svg>
+);
+
 export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ isOpen, onClose, onConnect }) => {
   const [view, setView] = useState<'LIST' | 'INFO'>('LIST');
   const [detected, setDetected] = useState<{ phantom: boolean; solflare: boolean }>({
@@ -16,7 +38,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
   const [isLinking, setIsLinking] = useState<string | null>(null);
   const [linkingStatus, setLinkingStatus] = useState<string>('NEGOTIATING_ENCRYPTION_KEYS');
 
-  // Reset internal states when the modal visibility changes
   useEffect(() => {
     if (!isOpen) {
       setIsLinking(null);
@@ -60,14 +81,12 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
       const addr = resp?.publicKey?.toString() || provider.publicKey?.toString();
       
       if (addr) {
-        // Enforce Identity Signature
         setLinkingStatus('AWAITING_IDENTITY_SIGNATURE');
         const message = new TextEncoder().encode(`VIGIL_IDENTITY_SYNC: ${Date.now()}`);
         
         try {
           await provider.signMessage(message, "utf8");
           setLinkingStatus('IDENTITY_VALIDATED_OK');
-          // High-fidelity final sync simulation
           await new Promise(r => setTimeout(r, 800));
           onConnect(addr);
         } catch (signErr) {
@@ -89,7 +108,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
       
       <div className="relative w-full max-w-[420px] bg-[#050505] border border-zinc-800 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
         
-        {/* MODAL HEADER */}
         <div className="flex items-center justify-between p-8 border-b border-zinc-900 bg-gradient-to-b from-white/[0.02] to-transparent">
           <button 
             onClick={() => setView(view === 'LIST' ? 'INFO' : 'LIST')}
@@ -110,7 +128,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
           </button>
         </div>
 
-        {/* CONTENT AREA */}
         <div className="p-4 min-h-[360px] flex flex-col">
           {isLinking ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in duration-300">
@@ -131,7 +148,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
             </div>
           ) : view === 'INFO' ? (
             <div className="flex-1 space-y-6 p-4 animate-in slide-in-from-left-4 duration-500">
-               {/* SECTION 1: IDENT_HANDSHAKE */}
                <div className="space-y-3">
                   <div className="flex items-center gap-3">
                      <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-blue-500">
@@ -145,7 +161,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   </div>
                </div>
 
-               {/* SECTION 2: LOCAL_SANDBOX */}
                <div className="space-y-3">
                   <div className="flex items-center gap-3">
                      <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-emerald-500">
@@ -159,7 +174,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   </div>
                </div>
 
-               {/* SECTION 3: RETINAL_THRESHOLD */}
                <div className="space-y-3">
                   <div className="flex items-center gap-3">
                      <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-amber-500">
@@ -169,23 +183,22 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   </div>
                   <div className="pl-11">
                      <p className="text-[11px] font-bold text-white mb-1 uppercase italic tracking-tight">Why establish a link?</p>
-                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">Establishing the link initializes your BRI (Biological Resilience Index)—a mathematical audit of your cognitive interception depth. Your resilience score scales as you synchronize intent against vanity mimics. High-fidelity calibration is the prerequisite for sovereign authority. XP accumulation is strictly gated by your BRI standing; sustained neural parity is required for terminal node elevation.</p>
+                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">Establishing the link initializes your BRI (Biological Resilience Index). High-fidelity calibration is the prerequisite for sovereign authority.</p>
                   </div>
                </div>
             </div>
           ) : (
             <div className="space-y-2 p-2 animate-in fade-in duration-500">
-              {/* PHANTOM ROW */}
               <button 
                 onClick={() => handleConnect('PHANTOM')}
-                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
+                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-[#AB9FF2]/40 hover:bg-[#AB9FF2]/5 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#ab9ff2]/40 shadow-[0_0_15px_rgba(171,159,242,0.1)] group-hover:shadow-[0_0_20px_rgba(171,159,242,0.25)] overflow-hidden">
-                     <img src="https://dd.dexscreener.com/ds-data/wallets/phantom.png" alt="Phantom" className="w-7 h-7 object-contain" />
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#AB9FF2]/40 shadow-[0_0_15px_rgba(171,159,242,0.1)] group-hover:shadow-[0_0_20px_rgba(171,159,242,0.25)] overflow-hidden">
+                     <PhantomIcon />
                   </div>
                   <div className="text-left">
-                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Phantom</span>
+                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic group-hover:text-white">Phantom</span>
                     <p className="text-[8px] font-mono text-zinc-600 uppercase tracking-tighter mt-0.5">NODE_PROVIDER_01</p>
                   </div>
                 </div>
@@ -202,17 +215,16 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                 </div>
               </button>
 
-              {/* SOLFLARE ROW */}
               <button 
                 onClick={() => handleConnect('SOLFLARE')}
-                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
+                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-[#FFEF46]/40 hover:bg-[#FFEF46]/5 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-orange-500/40 shadow-[0_0_15px_rgba(249,115,22,0.1)] group-hover:shadow-[0_0_20px_rgba(249,115,22,0.25)] overflow-hidden">
-                     <img src="https://dd.dexscreener.com/ds-data/wallets/solflare.png" alt="Solflare" className="w-7 h-7 object-contain" />
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#FFEF46]/40 shadow-[0_0_15px_rgba(255,239,70,0.1)] group-hover:shadow-[0_0_20px_rgba(255,239,70,0.25)] overflow-hidden">
+                     <SolflareIcon />
                   </div>
                   <div className="text-left">
-                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Solflare</span>
+                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic group-hover:text-white">Solflare</span>
                     <p className="text-[8px] font-mono text-zinc-600 uppercase tracking-tighter mt-0.5">NODE_PROVIDER_02</p>
                   </div>
                 </div>
@@ -229,7 +241,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                 </div>
               </button>
 
-              {/* NO WALLETS FALLBACK */}
               {noWallets && (
                 <div className="p-10 text-center space-y-4 animate-in fade-in duration-700 bg-red-600/5 border border-red-500/10 rounded-[2rem] mt-4">
                    <div className="w-12 h-12 bg-zinc-900 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
@@ -245,7 +256,6 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
           )}
         </div>
 
-        {/* FOOTER - PROTOCOL METADATA */}
         <div className="p-8 border-t border-zinc-900 flex flex-col items-center gap-6 shrink-0">
            <div className="flex items-center gap-3 opacity-40">
               <div className="flex items-center gap-2">
