@@ -169,7 +169,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   </div>
                   <div className="pl-11">
                      <p className="text-[11px] font-bold text-white mb-1 uppercase italic tracking-tight">Why establish a link?</p>
-                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">To neutralize the 8-character blind spot. Adversaries exploit visual shortcuts; Establishing a link enables the Retinal Shield to flag similarity collisions in real-time.</p>
+                     <p className="text-[10px] text-zinc-500 leading-relaxed font-medium uppercase">Establishing the link initializes your BRI (Biological Resilience Index)—a mathematical audit of your cognitive interception depth. Your resilience score scales as you synchronize intent against vanity mimics. High-fidelity calibration is the prerequisite for sovereign authority. XP accumulation is strictly gated by your BRI standing; sustained neural parity is required for terminal node elevation.</p>
                   </div>
                </div>
             </div>
