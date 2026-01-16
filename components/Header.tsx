@@ -157,10 +157,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Mobile Sidebar Identity Button */}
-            <div className="md:hidden flex flex-col items-center">
+            <div className="md:hidden flex flex-col items-center group/idmob">
               <button 
                 onClick={wallet ? () => { onDisconnectWallet?.(); setIsMenuOpen(false); } : () => { onConnectWallet?.(); setIsMenuOpen(false); }}
-                className={`w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-1 group transition-all ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
+                className={`w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-1 group transition-all relative ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
               >
                 {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
                   <>
@@ -176,6 +176,17 @@ export const Header: React.FC<HeaderProps> = ({
                   </>
                 )}
               </button>
+
+              {/* REVEAL OVERLAY FOR MOBILE */}
+              {isRealWallet && (
+                <div className="absolute top-0 left-full ml-4 opacity-0 group-hover/idmob:opacity-100 transition-opacity pointer-events-none z-[150] w-64">
+                   <div className="bg-[#0a0a0a] border border-zinc-800 p-4 rounded-xl shadow-2xl space-y-2">
+                      <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest block border-b border-zinc-900 pb-1 mb-1">Full_Identity</span>
+                      <p className="font-mono text-[9px] text-zinc-400 break-all leading-tight">{wallet}</p>
+                   </div>
+                </div>
+              )}
+
               {wallet && (
                 <span className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">
                   {isRealWallet ? 'SECURE_NODE_SYNCED' : 'VISITOR_UNSYNCED'}
@@ -267,7 +278,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-2">
             <button id="tour-hold-purge" onMouseDown={startPurgeHold} onMouseUp={cancelPurgeHold} onMouseLeave={cancelPurgeHold} onTouchStart={startPurgeHold} onTouchEnd={cancelPurgeHold} className="relative py-3 px-4 rounded-xl border border-red-900/40 bg-red-900/5 text-red-600 text-[8px] font-black uppercase tracking-widest hover:bg-red-900/20 hover:text-red-400 transition-all flex items-center justify-center gap-2 shadow-inner overflow-hidden group/purge">
-              <div className="absolute top-0 left-0 bottom-0 bg-red-600/20 transition-all duration-75 pointer-events-none" style={{ width: `${purgeHold}%` }} />
+              <div className="absolute top-0 left-0 bottom-0 bg-red-600/20 transition-all duration-75 pointer-none" style={{ width: `${purgeHold}%` }} />
               <Trash2 size={10} className="relative z-10" /> 
               <span className="relative z-10">{purgeHold > 0 ? `RESETTING ${Math.round(purgeHold)}%` : 'HOLD PURGE'}</span>
             </button>

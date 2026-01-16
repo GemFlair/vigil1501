@@ -341,24 +341,43 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
             </div>
             <div className="space-y-8 md:space-y-12">
                <div className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-6">
-                 <button 
-                   onClick={onConnectWallet} 
-                   className={`px-6 md:px-12 py-5 md:py-6 text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] transition-all shadow-[0_0_50px_rgba(59,130,246,0.3)] active:scale-95 flex items-center justify-center gap-4 rounded-none group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
-                 >
-                   {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
-                     <>
-                        <div className={`w-2 h-2 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-blue-400'}`} />
-                        <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
-                        <div className="w-[1px] h-4 bg-zinc-800 mx-2 group-hover:bg-zinc-600 transition-colors" />
-                        <LogOut size={14} className="text-zinc-600 group-hover:text-red-500 transition-colors" />
-                     </>
-                   ) : (
-                     <>
-                        <Wallet size={18} className="group-hover:scale-110 transition-transform" /> 
-                        CONNECT_IDENTITY
-                     </>
-                   )}
-                 </button>
+                 <div className="relative group/idbtn">
+                    <button 
+                      onClick={onConnectWallet} 
+                      className={`px-6 md:px-12 py-5 md:py-6 text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] transition-all shadow-[0_0_50px_rgba(59,130,246,0.3)] active:scale-95 flex items-center justify-center gap-4 rounded-none group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                    >
+                      {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
+                        <>
+                           <div className={`w-2 h-2 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-blue-400'}`} />
+                           <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                           <div className="w-[1px] h-4 bg-zinc-800 mx-2 group-hover:bg-zinc-600 transition-colors" />
+                           <LogOut size={14} className="text-zinc-600 group-hover:text-red-500 transition-colors" />
+                        </>
+                      ) : (
+                        <>
+                           <Wallet size={18} className="group-hover:scale-110 transition-transform" /> 
+                           CONNECT_IDENTITY
+                        </>
+                      )}
+                    </button>
+                    {/* REVEAL TOOLTIP */}
+                    {isRealWallet && (
+                      <div className="absolute top-full mt-4 left-0 opacity-0 group-hover/idbtn:opacity-100 transition-opacity pointer-events-none z-[150] w-full max-w-[400px]">
+                        <div className="bg-[#0a0a0a] border border-zinc-800 p-6 rounded-2xl shadow-[0_40px_100px_rgba(0,0,0,1)] space-y-4">
+                           <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
+                              <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Cryptographic_Payload_Identity</span>
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
+                           </div>
+                           <p className="font-mono text-[11px] text-zinc-300 break-all leading-relaxed select-all selection:bg-blue-500/40">
+                              {wallet}
+                           </p>
+                           <div className="text-center opacity-40">
+                              <span className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.4em]">Verified_Retinal_Parity</span>
+                           </div>
+                        </div>
+                      </div>
+                    )}
+                 </div>
                  <button onClick={() => scrollToSection('about-us')} className="px-6 md:px-12 py-5 md:py-6 bg-white text-black text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] hover:bg-zinc-800 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-4 rounded-none"><MousePointer2 size={18} /> Install VIGIL FIELD UNIT (Coming Soon)</button>
                  <button onClick={() => onOpenDoc('whitepaper')} className="px-6 md:px-12 py-5 md:py-6 border-2 border-zinc-700 text-white text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] hover:bg-zinc-900 hover:border-zinc-500 transition-all rounded-[8px]">READ WHITEPAPER</button>
                </div>
