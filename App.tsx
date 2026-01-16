@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { SecurityAnnouncementBar } from './components/SecurityAnnouncementBar';
 import { SecurityModal } from './components/SecurityModal';
 import { IdentitySelectionModal } from './components/IdentitySelectionModal';
+import { RevokeSessionModal } from './components/RevokeSessionModal';
 import { Hero } from './components/Hero';
 import { HowItWorks } from './components/HowItWorks';
 import { Problem } from './components/Problem';
@@ -61,6 +62,7 @@ const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(() => !localStorage.getItem('vigil_node_acknowledged'));
   const [isIdentitySelectionOpen, setIsIdentitySelectionOpen] = useState(false);
+  const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
   const [isBooting, setIsBooting] = useState(false);
   const [hasAcknowledged, setHasAcknowledged] = useState(() => !!localStorage.getItem('vigil_node_acknowledged'));
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('vigil_user_is_guest') === 'true');
@@ -214,7 +216,6 @@ const App: React.FC = () => {
     if (scrollContainerRef.current && viewMode === 'NARRATIVE') {
       const { scrollHeight, clientHeight } = scrollContainerRef.current;
       isProgrammaticScrollRef.current = true;
-      // Fixed: Changed 'percentage' to 'percent' to match the parameter name
       targetScrollTopRef.current = (percent / 100) * (scrollHeight - clientHeight);
     }
   };
@@ -276,13 +277,15 @@ const App: React.FC = () => {
   };
 
   const handleDisconnect = () => {
-    if (confirm("REVOKE_IDENTITY_SESSION? This will purge local session tokens but maintain registry progress.")) {
-      setWallet('');
-      setIsGuest(false);
-      localStorage.removeItem('vigil_user_wallet');
-      localStorage.removeItem('vigil_user_is_guest');
-      // Redirect to start or maintain context
-    }
+    setIsRevokeModalOpen(true);
+  };
+
+  const confirmDisconnect = () => {
+    setWallet('');
+    setIsGuest(false);
+    localStorage.removeItem('vigil_user_wallet');
+    localStorage.removeItem('vigil_user_is_guest');
+    setIsRevokeModalOpen(false);
   };
 
   const ambientStatus = `STATUS: [LOCAL_NODE_OPERATIONAL] // v 0.0.0.1 // BRI: ${bri}% // RANK: ${rank}${isAdmin ? ' // MASTER_AUTH: OK' : ''}`;
@@ -525,6 +528,12 @@ const App: React.FC = () => {
           setIsGuest(false);
           setIsIdentitySelectionOpen(false);
         }}
+      />
+
+      <RevokeSessionModal
+        isOpen={isRevokeModalOpen}
+        onClose={() => setIsRevokeModalOpen(false)}
+        onConfirm={confirmDisconnect}
       />
 
       {isBooting && (

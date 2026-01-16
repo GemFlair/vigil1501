@@ -93,7 +93,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
         <div className="flex items-center justify-between p-8 border-b border-zinc-900 bg-gradient-to-b from-white/[0.02] to-transparent">
           <button 
             onClick={() => setView(view === 'LIST' ? 'INFO' : 'LIST')}
-            className="text-zinc-600 hover:text-zinc-300 transition-colors"
+            className={`transition-colors ${view === 'LIST' ? 'text-blue-500 animate-pulse-subtle' : 'text-zinc-600 hover:text-zinc-300'}`}
           >
             {view === 'LIST' ? <HelpCircle size={18} strokeWidth={1.5} /> : <ChevronLeft size={18} strokeWidth={1.5} />}
           </button>
