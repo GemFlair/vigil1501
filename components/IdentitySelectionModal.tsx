@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, HelpCircle, ChevronRight, Smartphone, Zap, ShieldAlert, Download, Loader2 } from 'lucide-react';
+import { X, HelpCircle, ChevronRight, Smartphone, Zap, ShieldAlert, Download, Loader2, Target, Cpu, Wifi } from 'lucide-react';
 
 interface IdentitySelectionModalProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
     solflare: false
   });
   const [isLinking, setIsLinking] = useState<string | null>(null);
-  const [linkingStatus, setLinkingStatus] = useState<string>('INITIALIZING_HANDSHAKE');
+  const [linkingStatus, setLinkingStatus] = useState<string>('NEGOTIATING_ENCRYPTION_KEYS');
 
   // Reset internal states when the modal visibility changes
   useEffect(() => {
@@ -82,104 +82,135 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
   const noWallets = !detected.phantom && !detected.solflare;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-500">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl animate-in fade-in duration-500">
       <div className="absolute inset-0" onClick={onClose} />
       
-      <div className="relative w-full max-w-[420px] bg-[#1a1a1a] border border-white/5 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
+      <div className="relative w-full max-w-[420px] bg-[#050505] border border-zinc-800 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
         
         {/* MODAL HEADER */}
-        <div className="flex items-center justify-between p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-          <button className="text-zinc-500 hover:text-white transition-colors">
-            <HelpCircle size={20} strokeWidth={1.5} />
+        <div className="flex items-center justify-between p-8 border-b border-zinc-900 bg-gradient-to-b from-white/[0.02] to-transparent">
+          <button className="text-zinc-600 hover:text-zinc-300 transition-colors">
+            <HelpCircle size={18} strokeWidth={1.5} />
           </button>
-          <h3 className="text-lg font-bold text-white tracking-tight">Connect Wallet</h3>
-          <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors">
-            <X size={20} strokeWidth={1.5} />
+          <div className="flex flex-col items-center">
+             <span className="text-[8px] font-black text-blue-500 uppercase tracking-[0.4em] mb-1">Identity Protocol</span>
+             <h3 className="text-sm font-black text-white tracking-[0.2em] uppercase italic">Identity_Link_Portal</h3>
+          </div>
+          <button onClick={onClose} className="text-zinc-600 hover:text-white transition-colors">
+            <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
-        {/* WALLET LIST */}
+        {/* WALLET LIST / LOADING AREA */}
         <div className="p-4 space-y-1">
           {isLinking ? (
-            <div className="py-20 flex flex-col items-center justify-center text-center space-y-6 animate-in zoom-in duration-300">
+            <div className="py-24 flex flex-col items-center justify-center text-center space-y-8 animate-in zoom-in duration-300">
                <div className="relative">
-                  <div className="w-16 h-16 rounded-full border-2 border-blue-500/20 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-3xl bg-blue-600/5 border border-blue-500/20 flex items-center justify-center">
                     <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
                   </div>
-                  <div className="absolute inset-0 border-2 border-blue-500/10 rounded-full animate-ping" />
+                  <div className="absolute -inset-4 border-2 border-blue-500/10 rounded-full animate-ping" />
                </div>
-               <div className="space-y-1">
+               <div className="space-y-2">
                   <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] animate-pulse">{linkingStatus}</span>
-                  <p className="text-[11px] text-zinc-500 font-bold uppercase italic">AWAITING_REPLY_FROM_{isLinking}</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                    <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest">Handshake: {isLinking}</p>
+                    <div className="w-1 h-1 rounded-full bg-zinc-800" />
+                  </div>
                </div>
             </div>
           ) : (
-            <>
+            <div className="space-y-2 p-2">
               {/* PHANTOM ROW */}
               <button 
                 onClick={() => handleConnect('PHANTOM')}
-                className="w-full group flex items-center justify-between p-5 rounded-2xl hover:bg-white/[0.03] transition-all active:scale-[0.98]"
+                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#ab9ff2]/10 rounded-xl flex items-center justify-center border border-[#ab9ff2]/20 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#ab9ff2]/40">
                      <Smartphone className="text-[#ab9ff2]" size={20} />
                   </div>
-                  <span className="text-base font-bold text-zinc-200 tracking-tight">Phantom</span>
+                  <div className="text-left">
+                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Phantom</span>
+                    <p className="text-[8px] font-mono text-zinc-600 uppercase tracking-tighter mt-0.5">NODE_PROVIDER_01</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   {detected.phantom ? (
-                    <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[8px] font-black text-emerald-500 uppercase tracking-widest">Installed</span>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded-md">
+                       <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                       <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">OK</span>
+                    </div>
                   ) : (
-                    <span className="px-3 py-1 bg-zinc-800 border border-zinc-700 rounded-md text-[8px] font-black text-zinc-500 uppercase tracking-widest">Not Found</span>
+                    <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[8px] font-black text-zinc-600 uppercase tracking-widest">ABSENT</span>
                   )}
-                  <ChevronRight size={16} className="text-zinc-700 group-hover:text-zinc-400 transition-colors" />
+                  <ChevronRight size={14} className="text-zinc-800 group-hover:text-blue-500 transition-colors" />
                 </div>
               </button>
 
               {/* SOLFLARE ROW */}
               <button 
                 onClick={() => handleConnect('SOLFLARE')}
-                className="w-full group flex items-center justify-between p-5 rounded-2xl hover:bg-white/[0.03] transition-all active:scale-[0.98]"
+                className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center border border-orange-500/20 group-hover:scale-110 transition-transform">
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-orange-500/40">
                      <Zap className="text-orange-500" size={20} />
                   </div>
-                  <span className="text-base font-bold text-zinc-200 tracking-tight">Solflare</span>
+                  <div className="text-left">
+                    <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Solflare</span>
+                    <p className="text-[8px] font-mono text-zinc-600 uppercase tracking-tighter mt-0.5">NODE_PROVIDER_02</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   {detected.solflare ? (
-                    <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[8px] font-black text-emerald-500 uppercase tracking-widest">Installed</span>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/5 border border-emerald-500/20 rounded-md">
+                       <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                       <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">OK</span>
+                    </div>
                   ) : (
-                    <span className="px-3 py-1 bg-zinc-800 border border-zinc-700 rounded-md text-[8px] font-black text-zinc-500 uppercase tracking-widest">Not Found</span>
+                    <span className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[8px] font-black text-zinc-600 uppercase tracking-widest">ABSENT</span>
                   )}
-                  <ChevronRight size={16} className="text-zinc-700 group-hover:text-zinc-400 transition-colors" />
+                  <ChevronRight size={14} className="text-zinc-800 group-hover:text-blue-500 transition-colors" />
                 </div>
               </button>
 
               {/* NO WALLETS FALLBACK */}
               {noWallets && (
-                <div className="p-8 text-center space-y-4 animate-in fade-in duration-700">
-                   <div className="w-12 h-12 bg-red-600/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
+                <div className="p-10 text-center space-y-4 animate-in fade-in duration-700 bg-red-600/5 border border-red-500/10 rounded-[2rem] mt-4">
+                   <div className="w-12 h-12 bg-zinc-900 border border-red-500/20 rounded-full flex items-center justify-center mx-auto">
                       <ShieldAlert className="text-red-500" size={20} />
                    </div>
                    <div className="space-y-1">
-                      <h4 className="text-xs font-black text-white uppercase tracking-widest">No Wallet Found</h4>
-                      <p className="text-[10px] text-zinc-500 font-bold uppercase italic leading-relaxed">Install a Solana extension to establish an identity link.</p>
+                      <h4 className="text-[10px] font-black text-white uppercase tracking-widest">Link Failure</h4>
+                      <p className="text-[10px] text-zinc-600 font-bold uppercase italic leading-relaxed px-4">No compatible identity providers detected on this host.</p>
                    </div>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
 
-        {/* FOOTER */}
-        <div className="p-8 border-t border-white/5 flex flex-col items-center gap-4">
-           <div className="flex items-center gap-2 p-1.5 bg-white/5 border border-white/10 rounded-xl">
-              <span className="text-[10px] font-bold text-zinc-500 px-3 py-1">UX by</span>
-              <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-lg">
-                 <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                 <span className="text-zinc-300 font-mono text-[10px]">/ / reown</span>
+        {/* FOOTER - PROTOCOL METADATA */}
+        <div className="p-8 border-t border-zinc-900 flex flex-col items-center gap-6">
+           <div className="flex items-center gap-3 opacity-40">
+              <div className="flex items-center gap-2">
+                 <Wifi size={10} className="text-zinc-600" />
+                 <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Sovereign Relay</span>
+              </div>
+              <div className="w-[1px] h-3 bg-zinc-800" />
+              <div className="flex items-center gap-2">
+                 <Cpu size={10} className="text-zinc-600" />
+                 <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Local Heuristics</span>
+              </div>
+           </div>
+           
+           <div className="flex items-center gap-2 p-1.5 bg-zinc-950 border border-zinc-800 rounded-xl">
+              <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest px-3 py-1">Protocol Standard</span>
+              <div className="flex items-center gap-2 bg-zinc-900 px-3 py-1 rounded-lg">
+                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_#3b82f6]" />
+                 <span className="text-zinc-400 font-mono text-[9px] font-bold">VIG-INT-01-S</span>
               </div>
            </div>
         </div>
