@@ -13,7 +13,15 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
     solflare: false
   });
   const [isLinking, setIsLinking] = useState<string | null>(null);
-  const [linkingStatus, setLinkingStatus] = useState<string>('NEGOTIATING_ENCRYPTION_KEYS');
+  const [linkingStatus, setLinkingStatus] = useState<string>('INITIALIZING_HANDSHAKE');
+
+  // Reset internal states when the modal visibility changes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsLinking(null);
+      setLinkingStatus('INITIALIZING_HANDSHAKE');
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
