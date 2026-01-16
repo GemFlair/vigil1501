@@ -13,6 +13,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
     solflare: false
   });
   const [isLinking, setIsLinking] = useState<string | null>(null);
+  const [linkingStatus, setLinkingStatus] = useState<string>('NEGOTIATING_ENCRYPTION_KEYS');
 
   useEffect(() => {
     if (isOpen) {
@@ -38,6 +39,8 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
     }
 
     setIsLinking(type);
+    setLinkingStatus('INITIALIZING_HANDSHAKE');
+    
     try {
       const provider = type === 'PHANTOM' 
         ? (window as any).phantom?.solana || (window as any).solana 
@@ -47,13 +50,23 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
       const addr = resp?.publicKey?.toString() || provider.publicKey?.toString();
       
       if (addr) {
-        // High-fidelity handshake simulation
-        await new Promise(r => setTimeout(r, 1200));
-        onConnect(addr);
+        // Enforce Identity Signature
+        setLinkingStatus('AWAITING_IDENTITY_SIGNATURE');
+        const message = new TextEncoder().encode(`VIGIL_IDENTITY_SYNC: ${Date.now()}`);
+        
+        try {
+          await provider.signMessage(message, "utf8");
+          setLinkingStatus('IDENTITY_VALIDATED_OK');
+          // High-fidelity final sync simulation
+          await new Promise(r => setTimeout(r, 800));
+          onConnect(addr);
+        } catch (signErr) {
+          console.error("Signature rejected:", signErr);
+          setIsLinking(null);
+        }
       }
     } catch (e) {
       console.error("Link rejected:", e);
-    } finally {
       setIsLinking(null);
     }
   };
@@ -88,7 +101,7 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                   <div className="absolute inset-0 border-2 border-blue-500/10 rounded-full animate-ping" />
                </div>
                <div className="space-y-1">
-                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em]">Establishing Link</span>
+                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em] animate-pulse">{linkingStatus}</span>
                   <p className="text-[11px] text-zinc-500 font-bold uppercase italic">AWAITING_REPLY_FROM_{isLinking}</p>
                </div>
             </div>
