@@ -181,8 +181,8 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                 className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#ab9ff2]/40">
-                     <Smartphone className="text-[#ab9ff2]" size={20} />
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-[#ab9ff2]/40 shadow-[0_0_15px_rgba(171,159,242,0.1)] group-hover:shadow-[0_0_20px_rgba(171,159,242,0.25)]">
+                     <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg" alt="Phantom" className="w-7 h-7 object-contain" />
                   </div>
                   <div className="text-left">
                     <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Phantom</span>
@@ -208,8 +208,8 @@ export const IdentitySelectionModal: React.FC<IdentitySelectionModalProps> = ({ 
                 className="w-full group flex items-center justify-between p-5 rounded-2xl bg-zinc-950/50 border border-zinc-900 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all active:scale-[0.98]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-orange-500/40">
-                     <Zap className="text-orange-500" size={20} />
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center transition-all group-hover:border-orange-500/40 shadow-[0_0_15px_rgba(249,115,22,0.1)] group-hover:shadow-[0_0_20px_rgba(249,115,22,0.25)]">
+                     <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg" alt="Solflare" className="w-7 h-7 object-contain" />
                   </div>
                   <div className="text-left">
                     <span className="text-sm font-black text-zinc-200 tracking-widest uppercase italic">Solflare</span>

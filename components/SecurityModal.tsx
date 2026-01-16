@@ -201,16 +201,30 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 w-full">
               {[
-                { id: 'PHANTOM', label: 'Phantom', icon: <Smartphone />, color: 'text-blue-500', isDetected: detected.phantom, installUrl: 'https://phantom.app/' },
-                { id: 'SOLFLARE', label: 'Solflare', icon: <Zap />, color: 'text-orange-500', isDetected: detected.solflare, installUrl: 'https://solflare.com/' },
-                { id: 'SIMULATED', label: 'Virtual Node', icon: <Cpu />, color: 'text-emerald-500', isDetected: true, badge: 'Sandbox' },
-                { id: 'GUEST', label: 'Visitor', icon: <Globe />, color: 'text-zinc-500', isDetected: true, sub: 'Full Exploration' }
+                { 
+                  id: 'PHANTOM', 
+                  label: 'Phantom', 
+                  icon: <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/phantom/src/phantom.svg" alt="Phantom" className="w-full h-full object-contain" />, 
+                  color: 'group-hover:border-[#ab9ff2]/40', 
+                  isDetected: detected.phantom, 
+                  installUrl: 'https://phantom.app/' 
+                },
+                { 
+                  id: 'SOLFLARE', 
+                  label: 'Solflare', 
+                  icon: <img src="https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/solflare/src/solflare.svg" alt="Solflare" className="w-full h-full object-contain" />, 
+                  color: 'group-hover:border-orange-500/40', 
+                  isDetected: detected.solflare, 
+                  installUrl: 'https://solflare.com/' 
+                },
+                { id: 'SIMULATED', label: 'Virtual Node', icon: <Cpu />, color: 'group-hover:border-emerald-500/40 text-emerald-500', isDetected: true, badge: 'Sandbox' },
+                { id: 'GUEST', label: 'Visitor', icon: <Globe />, color: 'group-hover:border-zinc-500/40 text-zinc-500', isDetected: true, sub: 'Full Exploration' }
               ].map((w) => (
                 <div key={w.id} className="relative">
                   <button 
                     onClick={() => w.isDetected ? connectWallet(w.id as any) : window.open(w.installUrl, '_blank')}
                     disabled={isConnecting}
-                    className={`w-full group p-4 md:p-8 bg-zinc-950 border-2 border-zinc-900 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center gap-2 md:gap-4 transition-all active:scale-95 relative overflow-hidden disabled:opacity-50 ${w.isDetected ? 'hover:bg-zinc-900 hover:border-blue-500/50' : 'opacity-40 hover:opacity-100 hover:border-zinc-700'}`}
+                    className={`w-full group p-4 md:p-8 bg-zinc-950 border-2 border-zinc-900 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center gap-2 md:gap-4 transition-all active:scale-[0.98] relative overflow-hidden disabled:opacity-50 ${w.isDetected ? `hover:bg-zinc-900 ${w.color}` : 'opacity-40 hover:opacity-100 hover:border-zinc-700'}`}
                   >
                     {!w.isDetected && (
                       <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center z-20">
@@ -219,8 +233,14 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                          </div>
                       </div>
                     )}
-                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${w.color}`}>
-                      {React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })}
+                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${typeof w.icon !== 'object' ? w.color : ''}`}>
+                      {React.isValidElement(w.icon) && w.icon.type === 'img' ? (
+                        <div className="w-6 h-6 md:w-10 md:h-10">
+                          {w.icon}
+                        </div>
+                      ) : (
+                        React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })
+                      )}
                     </div>
                     <div className="space-y-0.5 md:space-y-1">
                       <span className="text-[8px] font-black text-white uppercase tracking-widest block">{w.label}</span>
