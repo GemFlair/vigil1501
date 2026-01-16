@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List, Wallet, ChevronRight } from 'lucide-react';
+import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List, Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { Header } from './components/Header';
 import { SecurityAnnouncementBar } from './components/SecurityAnnouncementBar';
 import { SecurityModal } from './components/SecurityModal';
@@ -271,6 +271,16 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDisconnect = () => {
+    if (confirm("REVOKE_IDENTITY? Registry access will be preserved but synchronization will terminate.")) {
+      setWallet('');
+      setIsGuest(false);
+      localStorage.removeItem('vigil_user_wallet');
+      localStorage.removeItem('vigil_user_is_guest');
+      // Keep acknowledged/BRI/XP but wipe identity
+    }
+  };
+
   const ambientStatus = `STATUS: [LOCAL_NODE_OPERATIONAL] // v 0.0.0.1 // BRI: ${bri}% // RANK: ${rank}${isAdmin ? ' // MASTER_AUTH: OK' : ''}`;
 
   const incrementUnlockLevel = (target?: number) => {
@@ -486,7 +496,7 @@ const App: React.FC = () => {
     }
   };
 
-  // Refined isRealWallet check: Cryptographic address required, excludes simulations and visitors
+  // Refined isRealWallet check: Exclude simulation prefixes and visitor nodes
   const isRealWallet = !!wallet && !isGuest && !wallet.includes("SIM_NODE") && !wallet.includes("VISITOR_NODE");
 
   return (
@@ -555,22 +565,26 @@ const App: React.FC = () => {
              <div className="h-10 w-[1px] bg-zinc-800" />
 
              <div className="flex flex-col items-end">
-                <button 
-                  onClick={() => setIsModalOpen(true)}
-                  className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
-                >
-                  {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
-                    <>
-                      <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
-                      <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Wallet size={12} className="group-hover:scale-110 transition-transform" /> 
-                      CONNECT_IDENTITY
-                    </>
-                  )}
-                </button>
+                <div className="flex items-center gap-2">
+                   <button 
+                     onClick={wallet ? handleDisconnect : () => setIsModalOpen(true)}
+                     className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                   >
+                     {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
+                       <>
+                         <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
+                         <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                         <div className="w-[1px] h-3 bg-zinc-800 mx-1 group-hover:bg-zinc-600 transition-colors" />
+                         <LogOut size={10} className="text-zinc-600 group-hover:text-red-500 transition-colors" />
+                       </>
+                     ) : (
+                       <>
+                         <Wallet size={12} className="group-hover:scale-110 transition-transform" /> 
+                         CONNECT_IDENTITY
+                       </>
+                     )}
+                   </button>
+                </div>
                 {wallet && (
                   <span className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em] mt-1 mr-1">
                     {isRealWallet ? 'SECURE_NODE_SYNCED' : 'VISITOR_UNSYNCED'}

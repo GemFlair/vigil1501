@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MousePointer2, Zap, Smartphone, ChevronRight, Info, ShieldCheck, ChevronDown, Activity, Loader2, Target, AlertTriangle, Map, ShieldAlert, Fingerprint, Eye, Binary, Search, CheckCircle2, ShieldX, Map as MapIcon, Gauge, Terminal, Radio, Wallet } from 'lucide-react';
+import { MousePointer2, Zap, Smartphone, ChevronRight, Info, ShieldCheck, ChevronDown, Activity, Loader2, Target, AlertTriangle, Map, ShieldAlert, Fingerprint, Eye, Binary, Search, CheckCircle2, ShieldX, Map as MapIcon, Gauge, Terminal, Radio, Wallet, LogOut } from 'lucide-react';
 import { RegistryDoc } from './OperationalRegistry';
 import { AddressGlyph } from './AddressGlyph';
 import { FacilityArchitecture } from './FacilityArchitecture';
@@ -348,7 +348,9 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                    {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
                      <>
                         <div className={`w-2 h-2 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-blue-400'}`} />
-                        <span className="font-mono">{wallet.slice(0, 8)}...{wallet.slice(-8)}</span>
+                        <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                        <div className="w-[1px] h-4 bg-zinc-800 mx-2 group-hover:bg-zinc-600 transition-colors" />
+                        <LogOut size={14} className="text-zinc-600 group-hover:text-red-500 transition-colors" />
                      </>
                    ) : (
                      <>

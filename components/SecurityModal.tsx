@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Lock, ShieldCheck, ChevronRight, Smartphone, Zap, Cpu, Globe, Loader2, Terminal, AlertTriangle, Wifi, RotateCcw } from 'lucide-react';
+import { ShieldAlert, Lock, ShieldCheck, ChevronRight, Smartphone, Zap, Cpu, Globe, Loader2, Terminal, AlertTriangle, Wifi, RotateCcw, Download } from 'lucide-react';
 
 interface SecurityModalProps {
   isOpen: boolean;
@@ -13,6 +13,26 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
   const [isConnecting, setIsConnecting] = useState(false);
   const [handshakeLog, setHandshakeLog] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  
+  const [detected, setDetected] = useState<{ phantom: boolean; solflare: boolean }>({
+    phantom: false,
+    solflare: false
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      const checkProviders = () => {
+        const isPhantom = !!((window as any).phantom?.solana || (window as any).solana?.isPhantom);
+        const isSolflare = !!((window as any).solflare);
+        setDetected({ phantom: isPhantom, solflare: isSolflare });
+      };
+      checkProviders();
+      // Polling for 2 seconds in case of slow injection
+      const timer = setInterval(checkProviders, 500);
+      setTimeout(() => clearInterval(timer), 2000);
+      return () => clearInterval(timer);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -39,7 +59,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
     try {
       if (type === 'SIMULATED') {
         await runHandshake('VIRTUAL');
-        // Distinct prefix to help App.tsx identify it as a simulation
         onClose("VIG1_SIM_NODE_8821xPoisoN7729110028x992211", false);
         return;
       }
@@ -50,7 +69,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         return;
       }
 
-      // Mobile Deep Link Redirection Logic
       if (isMobile) {
         const url = window.location.href.replace(/^https?:\/\//, '');
         if (type === 'PHANTOM') {
@@ -63,7 +81,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         }
       }
 
-      // Real Provider Detection (Desktop or In-App Browser)
       const provider = type === 'PHANTOM' 
         ? (window as any).phantom?.solana || (window as any).solana 
         : (window as any).solflare;
@@ -75,32 +92,27 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
       setHandshakeLog(`AWAITING_SIGNATURE_FROM_${type}...`);
       const resp = await provider.connect();
       
-      // Dramatic finish
-      await runHandshake(type);
-      
-      // Robust address extraction for Solana providers
       let walletAddr = '';
-      if (resp && resp.publicKey) {
+      // Explicitly extract string from PublicKey object
+      if (resp?.publicKey) {
         walletAddr = resp.publicKey.toString();
+      } else if (provider.publicKey) {
+        walletAddr = provider.publicKey.toString();
       } else if (typeof resp === 'string') {
         walletAddr = resp;
-      } else if (resp && resp.address) {
-        walletAddr = resp.address;
-      } else {
-        // Last resort stringification check
-        walletAddr = resp.toString();
       }
 
-      if (!walletAddr || walletAddr === '[object Object]') {
+      if (!walletAddr || walletAddr === 'true' || walletAddr === '[object Object]') {
         throw new Error("ADDRESS_EXTRACTION_FAILURE");
       }
 
+      await runHandshake(type);
       onClose(walletAddr, false);
     } catch (err: any) {
       console.error(err);
       let msg = "HANDSHAKE_REJECTED_BY_USER";
       if (err.message === "EXTENSION_NOT_FOUND") {
-        msg = isMobile ? `MOBILE_HANDSHAKE: RELAUNCHING IN ${type}...` : `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
+        msg = `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
       } else if (err.message === "ADDRESS_EXTRACTION_FAILURE") {
         msg = "ERROR: FAILED TO PARSE CRYPTOGRAPHIC ADDRESS";
       }
@@ -109,9 +121,10 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
     }
   };
 
+  const noExtensions = !detected.phantom && !detected.solflare;
+
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in fade-in duration-700 overflow-y-auto">
-      {/* Background Ambience */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/10 blur-[120px] pointer-events-none rounded-full" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/5 blur-[120px] pointer-events-none rounded-full" />
 
@@ -158,7 +171,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
             </div>
 
             <button onClick={() => setStep('CONNECT')} className="w-full py-5 md:py-7 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] rounded-xl md:rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 md:gap-4">ACKNOWLEDGE & PROCEED <ChevronRight size={18} /></button>
-            <p className="text-[7px] md:text-[8px] font-black text-zinc-700 uppercase tracking-[0.4em]">Registry ID: VIG-DISCLOSURE-2026</p>
           </div>
         ) : (
           <div className="relative z-10 flex flex-col items-center text-center space-y-8 md:space-y-12 animate-in fade-in slide-in-from-right-4 duration-500 h-full overflow-y-auto md:overflow-visible no-scrollbar">
@@ -168,44 +180,54 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                 <span className="text-[9px] md:text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] md:tracking-[0.6em]">Identity_Protocol</span>
               </div>
               <h2 className="text-3xl md:text-7xl font-black text-white italic uppercase tracking-tighter leading-[0.9]">ESTABLISH <br/> IDENTITY.</h2>
-              <p className="text-zinc-500 text-xs md:text-sm italic font-medium max-w-lg mx-auto leading-relaxed uppercase tracking-widest pt-2 md:pt-4">
-                "Registry synchronization requires an identity path. Choose to sync your wallet, test the sandbox, or explore the facility as a visitor."
-              </p>
+              
+              {noExtensions && !isConnecting && (
+                <div className="max-w-xl mx-auto p-4 bg-red-950/20 border border-red-900/40 rounded-2xl flex items-center gap-4 text-left">
+                  <AlertTriangle className="text-red-500 shrink-0" size={20} />
+                  <div>
+                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest">NO_EXTENSIONS_DETECTED</div>
+                    <p className="text-[10px] text-zinc-500 font-bold leading-relaxed uppercase italic">Install Phantom or Solflare to establish a cryptographic link.</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 w-full">
               {[
-                { id: 'PHANTOM', label: 'Phantom', icon: <Smartphone />, color: 'text-blue-500', bg: 'hover:bg-blue-600/10 hover:border-blue-500/50' },
-                { id: 'SOLFLARE', label: 'Solflare', icon: <Zap />, color: 'text-orange-500', bg: 'hover:bg-orange-600/10 hover:border-orange-500/50' },
-                { id: 'SIMULATED', label: 'Virtual Node', icon: <Cpu />, color: 'text-emerald-500', bg: 'hover:bg-emerald-600/10 hover:border-emerald-500/50', badge: 'Sandbox' },
-                { id: 'GUEST', label: 'Visitor', icon: <Globe />, color: 'text-zinc-500', bg: 'hover:bg-zinc-800 hover:border-zinc-700', sub: 'Full Exploration' }
+                { id: 'PHANTOM', label: 'Phantom', icon: <Smartphone />, color: 'text-blue-500', isDetected: detected.phantom, installUrl: 'https://phantom.app/' },
+                { id: 'SOLFLARE', label: 'Solflare', icon: <Zap />, color: 'text-orange-500', isDetected: detected.solflare, installUrl: 'https://solflare.com/' },
+                { id: 'SIMULATED', label: 'Virtual Node', icon: <Cpu />, color: 'text-emerald-500', isDetected: true, badge: 'Sandbox' },
+                { id: 'GUEST', label: 'Visitor', icon: <Globe />, color: 'text-zinc-500', isDetected: true, sub: 'Full Exploration' }
               ].map((w) => (
-                <button 
-                  key={w.id} 
-                  onClick={() => connectWallet(w.id as any)}
-                  disabled={isConnecting}
-                  className={`group p-4 md:p-8 bg-zinc-950 border-2 border-zinc-900 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center gap-2 md:gap-4 transition-all active:scale-95 relative overflow-hidden disabled:opacity-50 ${w.bg}`}
-                >
-                  {w.badge && (
-                    <div className="absolute top-0 right-0 p-1 md:p-2 opacity-20">
-                      <div className="px-1 py-0.5 bg-emerald-500 text-black text-[5px] md:text-[6px] font-black rounded uppercase">{w.badge}</div>
+                <div key={w.id} className="relative">
+                  <button 
+                    onClick={() => w.isDetected ? connectWallet(w.id as any) : window.open(w.installUrl, '_blank')}
+                    disabled={isConnecting}
+                    className={`w-full group p-4 md:p-8 bg-zinc-950 border-2 border-zinc-900 rounded-2xl md:rounded-[2.5rem] flex flex-col items-center gap-2 md:gap-4 transition-all active:scale-95 relative overflow-hidden disabled:opacity-50 ${w.isDetected ? 'hover:bg-zinc-900 hover:border-blue-500/50' : 'opacity-40 hover:opacity-100 hover:border-zinc-700'}`}
+                  >
+                    {!w.isDetected && (
+                      <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center z-20">
+                         <div className="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded text-[7px] font-black text-white flex items-center gap-1">
+                           <Download size={8} /> INSTALL
+                         </div>
+                      </div>
+                    )}
+                    <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${w.color}`}>
+                      {React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })}
                     </div>
-                  )}
-                  <div className={`w-10 h-10 md:w-16 md:h-16 bg-zinc-900 rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${w.color}`}>
-                    {React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })}
-                  </div>
-                  <div className="space-y-0.5 md:space-y-1">
-                    <span className="text-[8px] font-black text-white uppercase tracking-widest block">{w.label}</span>
-                    {w.sub && <span className="text-[5px] md:text-[6px] text-zinc-600 font-bold uppercase tracking-tight block">{w.sub}</span>}
-                  </div>
-                </button>
+                    <div className="space-y-0.5 md:space-y-1">
+                      <span className="text-[8px] font-black text-white uppercase tracking-widest block">{w.label}</span>
+                      {w.isDetected && <span className="text-[6px] text-emerald-500 font-bold uppercase tracking-tight block italic">Detected</span>}
+                    </div>
+                  </button>
+                </div>
               ))}
             </div>
 
             {error && (
               <div className="w-full p-4 md:p-5 bg-red-600/10 border border-red-500/20 rounded-xl md:rounded-2xl flex items-center justify-center gap-3 md:gap-4 animate-in slide-in-from-top-2">
                 <AlertTriangle size={16} className="text-red-500" />
-                <span className="text-[9px] md:text-[11px] font-black text-red-500 uppercase tracking-widest">{error}</span>
+                <span className="text-[9px] font-black text-red-500 uppercase tracking-widest">{error}</span>
               </div>
             )}
             
@@ -218,12 +240,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
             </button>
           </div>
         )}
-
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-zinc-900 overflow-hidden">
-           <div 
-            className={`h-full transition-all duration-1000 ${step === 'DISCLOSURE' ? 'w-1/2 bg-red-600' : 'w-full bg-emerald-600'}`} 
-           />
-        </div>
       </div>
     </div>
   );

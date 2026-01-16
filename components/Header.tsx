@@ -4,7 +4,7 @@ import {
   Shield, Scan, Terminal as TerminalIcon, Target, Fingerprint, 
   Globe, Search, Layout, Filter, Cpu, Brain, Eye, 
   ShieldCheck, HelpCircle, Trophy, Video, History, Edit3, 
-  MessageSquare, Flame, X, Lock, ChevronRight, Trash2, RefreshCw, Zap, Monitor, Compass, List, LayoutGrid, Wallet
+  MessageSquare, Flame, X, Lock, ChevronRight, Trash2, RefreshCw, Zap, Monitor, Compass, List, LayoutGrid, Wallet, LogOut
 } from 'lucide-react';
 import { TacticalHUD } from './TacticalHUD';
 import { RegistryDoc } from './OperationalRegistry';
@@ -38,10 +38,11 @@ interface HeaderProps {
   wallet?: string;
   isGuest?: boolean;
   onConnectWallet?: () => void;
+  onDisconnectWallet?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
-  activeAnchor, scrollToSection, isMenuOpen, setIsMenuOpen, releasePhase, onCodeSubmit, ambientStatus, isAdmin = false, bri, xp, rank, onOpenMap, onOpenDoc, viewMode, setViewMode, wallet, isGuest = false, onConnectWallet
+  activeAnchor, scrollToSection, isMenuOpen, setIsMenuOpen, releasePhase, onCodeSubmit, ambientStatus, isAdmin = false, bri, xp, rank, onOpenMap, onOpenDoc, viewMode, setViewMode, wallet, isGuest = false, onConnectWallet, onDisconnectWallet
 }) => {
   const [code, setCode] = useState('');
   const [codeStatus, setCodeStatus] = useState<'IDLE' | 'ERROR' | 'SUCCESS'>('IDLE');
@@ -158,13 +159,15 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile-Only Identity Button in Sidebar - Synchronized with Desktop HUD */}
             <div className="md:hidden flex flex-col items-center">
               <button 
-                onClick={() => { onConnectWallet?.(); setIsMenuOpen(false); }}
+                onClick={wallet ? () => { onDisconnectWallet?.(); setIsMenuOpen(false); } : () => { onConnectWallet?.(); setIsMenuOpen(false); }}
                 className={`w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-1 group transition-all ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
               >
                 {wallet && wallet !== "VISITOR_NODE_UNSYNCED" ? (
                   <>
                     <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
                     <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                    <div className="w-[1px] h-3 bg-zinc-800 mx-1" />
+                    <LogOut size={10} className="text-zinc-600 group-hover:text-red-500 transition-colors" />
                   </>
                 ) : (
                   <>
