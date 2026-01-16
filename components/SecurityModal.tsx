@@ -27,7 +27,6 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         setDetected({ phantom: isPhantom, solflare: isSolflare });
       };
       checkProviders();
-      // Polling for 2 seconds in case of slow injection
       const timer = setInterval(checkProviders, 500);
       setTimeout(() => clearInterval(timer), 2000);
       return () => clearInterval(timer);
@@ -89,21 +88,27 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         throw new Error("EXTENSION_NOT_FOUND");
       }
 
-      setHandshakeLog(`AWAITING_SIGNATURE_FROM_${type}...`);
+      setHandshakeLog(`CONNECTING_TO_${type}...`);
       const resp = await provider.connect();
       
       let walletAddr = '';
-      // Explicitly extract string from PublicKey object
       if (resp?.publicKey) {
         walletAddr = resp.publicKey.toString();
       } else if (provider.publicKey) {
         walletAddr = provider.publicKey.toString();
-      } else if (typeof resp === 'string') {
-        walletAddr = resp;
       }
 
-      if (!walletAddr || walletAddr === 'true' || walletAddr === '[object Object]') {
+      if (!walletAddr || walletAddr === 'true') {
         throw new Error("ADDRESS_EXTRACTION_FAILURE");
+      }
+
+      // FORCE SIGNATURE REQUEST
+      setHandshakeLog("AWAITING_IDENTITY_SIGNATURE...");
+      const message = new TextEncoder().encode(`VIGIL_IDENTITY_SYNC: ${Date.now()}`);
+      try {
+        await provider.signMessage(message, "utf8");
+      } catch (signErr) {
+        throw new Error("SIGNATURE_REJECTED");
       }
 
       await runHandshake(type);
@@ -115,6 +120,8 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         msg = `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
       } else if (err.message === "ADDRESS_EXTRACTION_FAILURE") {
         msg = "ERROR: FAILED TO PARSE CRYPTOGRAPHIC ADDRESS";
+      } else if (err.message === "SIGNATURE_REJECTED") {
+        msg = "ERROR: IDENTITY SIGNATURE REFUSED";
       }
       setError(msg);
       setIsConnecting(false);

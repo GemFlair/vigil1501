@@ -138,7 +138,7 @@ export const Header: React.FC<HeaderProps> = ({
     }
   }, [activeAnchor, viewMode]);
 
-  // Use identical isRealWallet check as App.tsx
+  // Unified isRealWallet logic
   const isRealWallet = !!wallet && !isGuest && !wallet.includes("SIM_NODE") && !wallet.includes("VISITOR_NODE");
 
   return (
@@ -156,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button onClick={() => setIsMenuOpen(false)} className="md:hidden text-zinc-400 p-2"><X className="w-6 h-6" /></button>
             </div>
 
-            {/* Mobile-Only Identity Button in Sidebar - Synchronized with Desktop HUD */}
+            {/* Mobile Sidebar Identity Button */}
             <div className="md:hidden flex flex-col items-center">
               <button 
                 onClick={wallet ? () => { onDisconnectWallet?.(); setIsMenuOpen(false); } : () => { onConnectWallet?.(); setIsMenuOpen(false); }}
@@ -201,7 +201,6 @@ export const Header: React.FC<HeaderProps> = ({
                >
                  <LayoutGrid size={10} /> Tactical
                </button>
-               {/* Hover tooltip for parity standard */}
                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-3 py-1 bg-zinc-950 border border-zinc-800 rounded text-[7px] font-black text-zinc-600 uppercase tracking-widest opacity-0 group-hover/toggle:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-[200]">
                   INTERFACE_PARITY: v1.1.0
                </div>
@@ -230,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({
                       setIsMenuOpen(false);
                     } else {
                       scrollToSection(item.id || '');
-                      setIsMenuOpen(false); // AUTO-CLOSE SIDEBAR ON MOBILE NAVIGATION
+                      setIsMenuOpen(false);
                     }
                   }} 
                   className={`w-full text-left px-4 py-3 rounded-2xl transition-all duration-500 flex items-center group relative border 

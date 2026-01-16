@@ -272,12 +272,12 @@ const App: React.FC = () => {
   };
 
   const handleDisconnect = () => {
-    if (confirm("REVOKE_IDENTITY? Registry access will be preserved but synchronization will terminate.")) {
+    if (confirm("REVOKE_IDENTITY_SESSION? This will purge local session tokens but maintain registry progress.")) {
       setWallet('');
       setIsGuest(false);
       localStorage.removeItem('vigil_user_wallet');
       localStorage.removeItem('vigil_user_is_guest');
-      // Keep acknowledged/BRI/XP but wipe identity
+      // Redirect to start or maintain context
     }
   };
 
@@ -633,6 +633,7 @@ const App: React.FC = () => {
           wallet={wallet}
           isGuest={isGuest}
           onConnectWallet={() => setIsModalOpen(true)}
+          onDisconnectWallet={handleDisconnect}
         />
         
         {viewMode === 'NARRATIVE' && (
