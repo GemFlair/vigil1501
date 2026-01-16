@@ -42,15 +42,15 @@ export const RevokeSessionModal: React.FC<RevokeSessionModalProps> = ({ isOpen, 
           
           <div className="space-y-4 font-mono text-[11px] text-zinc-400 font-bold uppercase leading-relaxed tracking-tight">
             <p className="flex gap-3">
-              <span className="text-red-600">>></span>
+              <span className="text-red-600">{'>>'}</span>
               <span>Purging local session tokens from browser cache.</span>
             </p>
             <p className="flex gap-3">
-              <span className="text-red-600">>></span>
+              <span className="text-red-600">{'>>'}</span>
               <span className="text-zinc-200 italic">Sentinel Registry progress (XP/BRI) will be maintained in host storage.</span>
             </p>
             <p className="flex gap-3">
-              <span className="text-red-600">>></span>
+              <span className="text-red-600">{'>>'}</span>
               <span>Severing active cryptographic handshake.</span>
             </p>
           </div>
