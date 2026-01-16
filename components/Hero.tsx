@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MousePointer2, Zap, Smartphone, ChevronRight, Info, ShieldCheck, ChevronDown, Activity, Loader2, Target, AlertTriangle, Map, ShieldAlert, Fingerprint, Eye, Binary, Search, CheckCircle2, ShieldX, Map as MapIcon, Gauge, Terminal, Radio } from 'lucide-react';
+import { MousePointer2, Zap, Smartphone, ChevronRight, Info, ShieldCheck, ChevronDown, Activity, Loader2, Target, AlertTriangle, Map, ShieldAlert, Fingerprint, Eye, Binary, Search, CheckCircle2, ShieldX, Map as MapIcon, Gauge, Terminal, Radio, Wallet } from 'lucide-react';
 import { RegistryDoc } from './OperationalRegistry';
 import { AddressGlyph } from './AddressGlyph';
 import { FacilityArchitecture } from './FacilityArchitecture';
@@ -286,10 +286,15 @@ interface HeroProps {
   onOpenBriefing: () => void;
   isAdmin?: boolean;
   isTacticalMode?: boolean;
+  onConnectWallet?: () => void;
+  wallet?: string;
+  isGuest?: boolean;
 }
 
-export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSave, isReady = true, onUnlockNext, unlockLevel, onFail, onOpenMap, onOpenBriefing, isAdmin = false, isTacticalMode = false }) => {
+export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSave, isReady = true, onUnlockNext, unlockLevel, onFail, onOpenMap, onOpenBriefing, isAdmin = false, isTacticalMode = false, onConnectWallet, wallet, isGuest = false }) => {
   const [isSilo1Vanished, setIsSilo1Vanished] = useState(false);
+
+  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
 
   return (
     <section id="hero" className={`flex flex-col px-0 md:px-20 pt-8 md:pt-24 relative overflow-hidden bg-[#020202] transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isSilo1Vanished ? 'min-h-fit pb-12' : 'min-h-screen pb-24 justify-center'}`}>
@@ -305,7 +310,7 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
                 <div className="flex items-center gap-4">
                   <button id="tour-mission-briefing" onClick={onOpenBriefing} className="relative group active:scale-95 transition-all duration-300">
                     <div className="absolute inset-0 bg-blue-500/30 md:rounded-full rounded-[8px] animate-radar-pulse" />
-                    <div className="relative px-6 py-4 md:py-2.5 bg-black border-2 md:border border-blue-500/60 md:rounded-full rounded-[8px] flex items-center gap-3 shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:border-blue-400 animate-button-breathe">
+                    <div className="relative px-6 py-4 md:py-2.5 bg-black border border-blue-500/60 md:rounded-full rounded-[8px] flex items-center gap-3 shadow-[0_0_20px_rgba(37,99,235,0.4)] group-hover:border-blue-400 animate-button-breathe">
                       <Zap size={14} className="text-blue-400 fill-blue-400/20" />
                       <span className="text-[11px] md:text-[9px] font-black text-white uppercase tracking-[0.4em] italic">Mission Briefing</span>
                     </div>
@@ -335,7 +340,23 @@ export const Hero: React.FC<HeroProps> = ({ scrollToSection, onOpenDoc, powerSav
             </div>
             <div className="space-y-8 md:space-y-12">
                <div className="flex flex-col sm:flex-row flex-wrap gap-4 md:gap-6">
-                 <button onClick={() => scrollToSection('about-us')} className="px-6 md:px-12 py-5 md:py-6 bg-white text-black text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-4 rounded-none"><MousePointer2 size={18} /> Install VIGIL FIELD UNIT (Coming Soon)</button>
+                 <button 
+                   onClick={onConnectWallet} 
+                   className={`px-6 md:px-12 py-5 md:py-6 text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] transition-all shadow-[0_0_50px_rgba(59,130,246,0.3)] active:scale-95 flex items-center justify-center gap-4 rounded-none group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                 >
+                   {wallet ? (
+                     <>
+                        <div className={`w-2 h-2 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-blue-400'}`} />
+                        <span className="font-mono">{wallet.slice(0, 8)}...{wallet.slice(-8)}</span>
+                     </>
+                   ) : (
+                     <>
+                        <Wallet size={18} className="group-hover:scale-110 transition-transform" /> 
+                        CONNECT_IDENTITY
+                     </>
+                   )}
+                 </button>
+                 <button onClick={() => scrollToSection('about-us')} className="px-6 md:px-12 py-5 md:py-6 bg-white text-black text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] hover:bg-zinc-800 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-4 rounded-none"><MousePointer2 size={18} /> Install VIGIL FIELD UNIT (Coming Soon)</button>
                  <button onClick={() => onOpenDoc('whitepaper')} className="px-6 md:px-12 py-5 md:py-6 border-2 border-zinc-700 text-white text-[11px] md:text-[12px] font-black uppercase tracking-[0.3em] hover:bg-zinc-900 hover:border-zinc-500 transition-all rounded-[8px]">READ WHITEPAPER</button>
                </div>
                <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-left duration-1000 delay-500">

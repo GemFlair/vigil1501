@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Lock, ShieldCheck, ChevronRight, Smartphone, Zap, Cpu, Globe, Loader2, Terminal, AlertTriangle, Wifi, RotateCcw } from 'lucide-react';
 
@@ -34,6 +33,8 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
   const connectWallet = async (type: 'PHANTOM' | 'SOLFLARE' | 'SIMULATED' | 'GUEST') => {
     setIsConnecting(true);
     setError(null);
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     try {
       if (type === 'SIMULATED') {
@@ -48,7 +49,20 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
         return;
       }
 
-      // Real Provider Detection
+      // Mobile Deep Link Redirection Logic
+      if (isMobile) {
+        const url = window.location.href.replace(/^https?:\/\//, '');
+        if (type === 'PHANTOM') {
+          window.location.href = `https://phantom.app/ul/browse/${encodeURIComponent(url)}?ref=${encodeURIComponent(window.location.origin)}`;
+          return;
+        }
+        if (type === 'SOLFLARE') {
+          window.location.href = `https://solflare.com/ul/v1/browse/${encodeURIComponent(url)}?ref=${encodeURIComponent(window.location.origin)}`;
+          return;
+        }
+      }
+
+      // Real Provider Detection (Desktop or In-App Browser)
       const provider = type === 'PHANTOM' 
         ? (window as any).phantom?.solana || (window as any).solana 
         : (window as any).solflare;
@@ -69,7 +83,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
       console.error(err);
       let msg = "HANDSHAKE_REJECTED_BY_USER";
       if (err.message === "EXTENSION_NOT_FOUND") {
-        msg = `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
+        msg = isMobile ? `MOBILE_HANDSHAKE: RELAUNCHING IN ${type}...` : `RELIANCE_FAILURE: ${type} NOT INSTALLED`;
       }
       setError(msg);
       setIsConnecting(false);
@@ -124,7 +138,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                </div>
             </div>
 
-            <button onClick={() => setStep('CONNECT')} className="w-full py-5 md:py-7 bg-white text-black text-[12px] md:text-[14px] font-black uppercase tracking-[0.4em] rounded-xl md:rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 md:gap-4">ACKNOWLEDGE & PROCEED <ChevronRight size={18} /></button>
+            <button onClick={() => setStep('CONNECT')} className="w-full py-5 md:py-7 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] rounded-xl md:rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-2xl active:scale-95 flex items-center justify-center gap-3 md:gap-4">ACKNOWLEDGE & PROCEED <ChevronRight size={18} /></button>
             <p className="text-[7px] md:text-[8px] font-black text-zinc-700 uppercase tracking-[0.4em]">Registry ID: VIG-DISCLOSURE-2026</p>
           </div>
         ) : (
@@ -162,7 +176,7 @@ export const SecurityModal: React.FC<SecurityModalProps> = ({ isOpen, onClose })
                     {React.cloneElement(w.icon as React.ReactElement<{ size?: number }>, { size: typeof window !== 'undefined' && window.innerWidth < 768 ? 20 : 32 })}
                   </div>
                   <div className="space-y-0.5 md:space-y-1">
-                    <span className="text-[8px] md:text-[10px] font-black text-white uppercase tracking-widest block">{w.label}</span>
+                    <span className="text-[8px] font-black text-white uppercase tracking-widest block">{w.label}</span>
                     {w.sub && <span className="text-[5px] md:text-[6px] text-zinc-600 font-bold uppercase tracking-tight block">{w.sub}</span>}
                   </div>
                 </button>

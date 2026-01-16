@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, Users, AlertOctagon, Activity, Layers, 
   Shield, Scan, Terminal as TerminalIcon, Target, Fingerprint, 
   Globe, Search, Layout, Filter, Cpu, Brain, Eye, 
   ShieldCheck, HelpCircle, Trophy, Video, History, Edit3, 
-  MessageSquare, Flame, X, Lock, ChevronRight, Trash2, RefreshCw, Zap, Monitor, Compass, List, LayoutGrid
+  MessageSquare, Flame, X, Lock, ChevronRight, Trash2, RefreshCw, Zap, Monitor, Compass, List, LayoutGrid, Wallet
 } from 'lucide-react';
 import { TacticalHUD } from './TacticalHUD';
 import { RegistryDoc } from './OperationalRegistry';
@@ -36,10 +35,13 @@ interface HeaderProps {
   onOpenDoc: (doc: RegistryDoc) => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  wallet?: string;
+  isGuest?: boolean;
+  onConnectWallet?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
-  activeAnchor, scrollToSection, isMenuOpen, setIsMenuOpen, releasePhase, onCodeSubmit, ambientStatus, isAdmin = false, bri, xp, rank, onOpenMap, onOpenDoc, viewMode, setViewMode
+  activeAnchor, scrollToSection, isMenuOpen, setIsMenuOpen, releasePhase, onCodeSubmit, ambientStatus, isAdmin = false, bri, xp, rank, onOpenMap, onOpenDoc, viewMode, setViewMode, wallet, isGuest = false, onConnectWallet
 }) => {
   const [code, setCode] = useState('');
   const [codeStatus, setCodeStatus] = useState<'IDLE' | 'ERROR' | 'SUCCESS'>('IDLE');
@@ -135,13 +137,15 @@ export const Header: React.FC<HeaderProps> = ({
     }
   }, [activeAnchor, viewMode]);
 
+  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
+
   return (
     <aside id="tour-sidebar-nav" className={`fixed inset-x-0 bottom-0 top-10 z-[100] bg-[#050505] md:relative md:top-0 md:h-full w-full md:w-72 border-r border-zinc-800 transition-all duration-500 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
       <div className="flex flex-col h-full">
         <div className="p-6 shrink-0 relative z-[101] bg-[#050505] pb-0 overflow-visible">
           <div className="flex flex-col gap-3 overflow-visible">
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-4 cursor-pointer group" onClick={() => scrollToSection('silo-1')}>
+              <div className="flex items-center space-x-4 cursor-pointer group" onClick={() => { scrollToSection('silo-1'); setIsMenuOpen(false); }}>
                 <div className="w-6 h-6 bg-white flex items-center justify-center rounded-sm shadow-xl">
                   <div className="w-3 h-3 bg-black rotate-45" />
                 </div>
@@ -149,6 +153,24 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="md:hidden text-zinc-400 p-2"><X className="w-6 h-6" /></button>
             </div>
+
+            {/* Mobile-Only Identity Button in Sidebar - Shows address if connected */}
+            <button 
+              onClick={() => { onConnectWallet?.(); setIsMenuOpen(false); }}
+              className={`md:hidden w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 shadow-xl active:scale-95 mb-2 group transition-all ${isRealWallet ? 'bg-zinc-900 border border-zinc-800 text-white' : 'bg-blue-600 text-white'}`}
+            >
+              {wallet ? (
+                <>
+                  <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
+                  <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                </>
+              ) : (
+                <>
+                  <Wallet size={14} className="group-hover:scale-110 transition-transform" /> 
+                  CONNECT_IDENTITY
+                </>
+              )}
+            </button>
             
             <div id="tour-bri-dash" className="mt-1 relative">
               <TacticalHUD bri={bri} xp={xp} rank={rank} level={releasePhase} onOpenMap={onOpenMap} />
@@ -157,14 +179,14 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Interface Parity Toggle */}
             <div id="tour-view-mode" className="mt-4 p-1 bg-[#0a0a0a] border border-zinc-800 rounded-xl flex items-center gap-1 shadow-inner relative group/toggle">
                <button 
-                 onClick={() => setViewMode('NARRATIVE')}
+                 onClick={() => { setViewMode('NARRATIVE'); setIsMenuOpen(false); }}
                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${viewMode === 'NARRATIVE' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-600 hover:text-zinc-400'}`}
                >
                  <List size={10} /> Narrative
                </button>
                <button 
-                 onClick={() => setViewMode('TACTICAL')}
-                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${viewMode === 'TACTICAL' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'text-zinc-600 hover:text-zinc-400'}`}
+                 onClick={() => { setViewMode('TACTICAL'); setIsMenuOpen(false); }}
+                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${viewMode === 'TACTICAL' ? 'bg-blue-600 text-white shadow-[0_0_10px_rgba(59,130,246,0.3)]' : 'text-zinc-600 hover:text-zinc-400'}`}
                >
                  <LayoutGrid size={10} /> Tactical
                </button>
@@ -197,6 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
                       setIsMenuOpen(false);
                     } else {
                       scrollToSection(item.id || '');
+                      setIsMenuOpen(false); // AUTO-CLOSE SIDEBAR ON MOBILE NAVIGATION
                     }
                   }} 
                   className={`w-full text-left px-4 py-3 rounded-2xl transition-all duration-500 flex items-center group relative border 

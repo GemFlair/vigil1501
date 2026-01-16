@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List } from 'lucide-react';
+import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List, Wallet, ChevronRight } from 'lucide-react';
 import { Header } from './components/Header';
 import { SecurityAnnouncementBar } from './components/SecurityAnnouncementBar';
 import { SecurityModal } from './components/SecurityModal';
@@ -321,6 +321,9 @@ const App: React.FC = () => {
               onOpenBriefing={() => setIsBriefingOpen(true)}
               isAdmin={isAdmin}
               isTacticalMode={true}
+              onConnectWallet={() => setIsModalOpen(true)}
+              wallet={wallet}
+              isGuest={isGuest}
             />
           </div>
         );
@@ -483,6 +486,8 @@ const App: React.FC = () => {
     }
   };
 
+  const isRealWallet = wallet && !isGuest && !wallet.includes("VISITOR_NODE");
+
   return (
     <div className={`h-screen w-screen bg-[#020202] text-[#fafafa] selection:bg-blue-600/40 selection:text-white font-sans flex flex-col pt-10 overflow-hidden ${isPowerSave ? 'pwr-save' : ''}`}>
       
@@ -549,11 +554,27 @@ const App: React.FC = () => {
              <div className="h-10 w-[1px] bg-zinc-800" />
 
              <div className="flex flex-col items-end">
-                <div className="flex items-center gap-2">
-                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />
-                   <span className="text-[10px] font-black text-white uppercase tracking-widest italic">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
-                </div>
-                <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">SECURE_NODE_SYNCED</span>
+                <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 group ${isRealWallet ? 'bg-zinc-950 border border-zinc-800 text-white' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
+                >
+                  {wallet ? (
+                    <>
+                      <div className={`w-1.5 h-1.5 rounded-full ${isRealWallet ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-blue-400'}`} />
+                      <span className="font-mono">{wallet.slice(0, 4)}...{wallet.slice(-4)}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Wallet size={12} className="group-hover:scale-110 transition-transform" /> 
+                      CONNECT_IDENTITY
+                    </>
+                  )}
+                </button>
+                {wallet && (
+                  <span className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em] mt-1 mr-1">
+                    {isRealWallet ? 'SECURE_NODE_SYNCED' : 'VISITOR_UNSYNCED'}
+                  </span>
+                )}
              </div>
              <div className="h-10 w-[1px] bg-zinc-800" />
              <div className="flex items-center gap-3 px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-xl">
@@ -594,6 +615,9 @@ const App: React.FC = () => {
           onOpenDoc={(doc) => setActiveDoc(doc)}
           viewMode={viewMode}
           setViewMode={setViewMode}
+          wallet={wallet}
+          isGuest={isGuest}
+          onConnectWallet={() => setIsModalOpen(true)}
         />
         
         {viewMode === 'NARRATIVE' && (
@@ -620,6 +644,9 @@ const App: React.FC = () => {
                   onOpenMap={() => setIsTopologyOpen(true)}
                   onOpenBriefing={() => setIsBriefingOpen(true)}
                   isAdmin={isAdmin}
+                  onConnectWallet={() => setIsModalOpen(true)}
+                  wallet={wallet}
+                  isGuest={isGuest}
                 />
               </div>
 
@@ -883,6 +910,7 @@ const App: React.FC = () => {
                     </div>
                     
                     <div className="p-2 md:p-10 bg-zinc-950/20 border-x border-b border-zinc-800 shadow-2xl space-y-12 md:space-y-24">
+                       {/* Fixed 'level' not found by using 'activeSpoke' */}
                        {renderSiloContent(activeSpoke)}
                     </div>
                     
