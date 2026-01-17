@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, Search, Binary, Target, ShieldX, Activity, Database, BarChart3, Globe, Trophy, Info, Zap, Radio, Smartphone, Monitor, Brain, Cpu, Layers, Sparkles, ShieldAlert, ShieldCheck, ZapOff, Clock, ArrowRight, ArrowDownRight, Compass, Wifi, LayoutGrid, List, Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { Header } from './components/Header';
@@ -76,6 +75,7 @@ const App: React.FC = () => {
   const [isBriefingOpen, setIsBriefingOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('vigil_master_auth') === 'true');
   const [showTutorial, setShowTutorial] = useState(false);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(() => localStorage.getItem('vigil_onboarding_completed') === 'true');
   
   // Interface Parity States
   const [viewMode, setViewMode] = useState<ViewMode>(() => 
@@ -168,7 +168,7 @@ const App: React.FC = () => {
       'hub-apex', 'entropy-collider-demo', 'field-unit-demo',
       'non-goals', 'roadmap', 'faq',
       'final-proficiency-audit', 'silo-9', 'prod-studio', 'chronicle-repo', 
-      'brand-arch', 'comms-terminal', 'active-challenge', 'daily-distraction',
+      'brand-architect', 'comms-terminal', 'active-challenge', 'daily-distraction',
       'silo-10'
     ];
 
@@ -198,6 +198,17 @@ const App: React.FC = () => {
     animationFrameRef.current = requestAnimationFrame(smoothScrollLoop);
     return () => { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); };
   }, [viewMode]);
+
+  useEffect(() => {
+    if (showTutorial) {
+      setViewMode('NARRATIVE');
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+        currentScrollTopRef.current = 0;
+        targetScrollTopRef.current = 0;
+      }
+    }
+  }, [showTutorial]);
 
   const handleScroll = () => {
     if (scrollContainerRef.current && viewMode === 'NARRATIVE') {
@@ -330,7 +341,7 @@ const App: React.FC = () => {
               scrollToSection={scrollToSection} 
               onOpenDoc={(doc) => setActiveDoc(doc)} 
               powerSave={isPowerSave} 
-              isReady={hasAcknowledged && !showTutorial}
+              isReady={hasAcknowledged && (onboardingCompleted || !showTutorial)}
               onUnlockNext={() => incrementUnlockLevel(2)}
               unlockLevel={unlockLevel}
               onFail={() => handleScoring(false, 1)}
@@ -537,7 +548,7 @@ const App: React.FC = () => {
       />
 
       {isBooting && (
-        <SystemBoot onComplete={handleCalibrationComplete} skipGame={isGuest} />
+        <SystemBoot onComplete={handleCalibrationComplete} skipGame={isGuest} isGuest={isGuest} />
       )}
 
       {showResumePrompt && (
@@ -557,6 +568,7 @@ const App: React.FC = () => {
       {showTutorial && (
         <OnboardingTutorial onComplete={() => {
           setShowTutorial(false);
+          setOnboardingCompleted(true);
           localStorage.setItem('vigil_onboarding_completed', 'true');
         }} />
       )}
@@ -691,7 +703,7 @@ const App: React.FC = () => {
                   scrollToSection={scrollToSection} 
                   onOpenDoc={(doc) => setActiveDoc(doc)} 
                   powerSave={isPowerSave} 
-                  isReady={hasAcknowledged && !showTutorial}
+                  isReady={hasAcknowledged && (onboardingCompleted || !showTutorial)}
                   onUnlockNext={() => incrementUnlockLevel(2)}
                   unlockLevel={unlockLevel}
                   onFail={() => handleScoring(false, 1)}

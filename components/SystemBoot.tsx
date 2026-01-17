@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Activity, Scan, ShieldAlert, ShieldCheck, Terminal, Info, Zap, ChevronRight, BarChart3, HeartPulse } from 'lucide-react';
 
 interface SystemBootProps {
   onComplete: (score: number) => void;
   skipGame?: boolean;
+  isGuest?: boolean;
 }
 
 type BootPhase = 'COLD_START' | 'BRI_BRIEFING' | 'CALIBRATE' | 'VERDICT' | 'INTEGRITY_SCAN' | 'IDENTITY_MANIFEST' | 'EXIT';
@@ -22,7 +22,7 @@ const SCAN_LOG_STEPS = [
   "ENCRYPTED_HANDSHAKE_ESTABLISHED"
 ];
 
-export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete, skipGame = false }) => {
+export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete, skipGame = false, isGuest = false }) => {
   const [phase, setPhase] = useState<BootPhase>('COLD_START');
   const [typewriterText, setTypewriterText] = useState('');
   const [typewriterIndex, setTypewriterIndex] = useState(0);
@@ -39,7 +39,9 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete, skipGame = f
   const audioCtxRef = useRef<AudioContext | null>(null);
   const humNodeRef = useRef<OscillatorNode | null>(null);
   
-  const coldStartText = "IDENTITY_VULNERABILITY_DETECTED.\nINITIALIZING_SOVEREIGN_SCAN...";
+  const coldStartText = isGuest 
+    ? "IDENTITY_VULNERABILITY_DETECTED.\nINITIALIZING_SOVEREIGN_SCAN..."
+    : "LINK_ESTABLISHED // SYNCING_THREAT_MODELS,\nINITIALIZING_SOVEREIGN_SCAN...";
 
   const getAudioCtx = () => {
     if (!audioCtxRef.current) {
@@ -407,7 +409,7 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete, skipGame = f
                   <div className="space-y-1.5 font-mono text-[9px] text-zinc-600 uppercase">
                      {activeLogs.map((log, i) => (
                        <div key={i} className="animate-in slide-in-from-left-2 duration-300">
-                         <span className="text-zinc-800 mr-2">&gt;&gt;</span> {log}
+                         <span className="text-zinc-800 mr-2">>></span> {log}
                        </div>
                      ))}
                   </div>
