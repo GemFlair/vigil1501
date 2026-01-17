@@ -409,7 +409,7 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete, skipGame = f
                   <div className="space-y-1.5 font-mono text-[9px] text-zinc-600 uppercase">
                      {activeLogs.map((log, i) => (
                        <div key={i} className="animate-in slide-in-from-left-2 duration-300">
-                         <span className="text-zinc-800 mr-2">>></span> {log}
+                         <span className="text-zinc-800 mr-2">{'>>'}</span> {log}
                        </div>
                      ))}
                   </div>
