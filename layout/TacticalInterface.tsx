@@ -1,8 +1,8 @@
 import React from 'react';
 import { Target, ArrowDownRight } from 'lucide-react';
-import { TacticalAtrium } from '../TacticalAtrium';
-import { Footer } from '../Footer';
-import { RegistryDoc } from '../OperationalRegistry';
+import { TacticalAtrium } from '../components/TacticalAtrium';
+import { Footer } from '../components/Footer';
+import { RegistryDoc } from '../components/OperationalRegistry';
 
 interface TacticalInterfaceProps {
   activeSpoke: number | null;

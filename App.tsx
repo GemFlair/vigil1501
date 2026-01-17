@@ -17,9 +17,9 @@ import { MissionBriefing } from './components/MissionBriefing';
 import { OnboardingTutorial } from './components/OnboardingTutorial';
 import { ScrollToTop } from './components/ScrollToTop';
 import { useVigilState } from './hooks/useVigilState';
-import { SiloRenderer } from './components/renderers/SiloRenderer';
-import { NarrativeInterface } from './components/layout/NarrativeInterface';
-import { TacticalInterface } from './components/layout/TacticalInterface';
+import { SiloRenderer } from './renderers/SiloRenderer';
+import { NarrativeInterface } from './layout/NarrativeInterface';
+import { TacticalInterface } from './layout/TacticalInterface';
 
 export type ViewMode = 'NARRATIVE' | 'TACTICAL';
 
