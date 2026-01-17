@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Share2, Zap, Shield, Download, Terminal as TerminalIcon, 
@@ -6,10 +7,12 @@ import {
   Lock, Activity, Target, Layers, Play, Video, X, 
   Timer, Film, CheckCircle2, Loader2, RotateCcw, Box,
   Glasses, Waves, Flame, Move, Gauge, Activity as ActivityIcon,
-  Ruler
+  Ruler, Eye, Skull, AlertCircle
 } from 'lucide-react';
+// Added missing import for TechLabel
+import { TechLabel } from './docs/DocHelpers';
 
-type LayoutType = 'COMPARISON' | 'MANIFESTO' | 'ARCHITECTURE' | 'BENCHMARK';
+type LayoutType = 'COMPARISON' | 'MANIFESTO' | 'ARCHITECTURE' | 'BENCHMARK' | 'RETINAL_AUTOPSY';
 type EngineType = 'BRUTALIST' | 'ISOMETRIC' | 'REFRACTIVE' | 'MESH';
 
 interface Preset {
@@ -28,6 +31,34 @@ interface Preset {
 }
 
 const PRESETS: Preset[] = [
+  {
+    id: 'CATANA_FORENSIC',
+    label: 'TWEET 15: CATANA CASE STUDY',
+    layout: 'RETINAL_AUTOPSY',
+    title: 'THE MATURITY \n TRAP.',
+    sub: 'CONCENTRATION_FORENSIC // X-VG-15',
+    leftLabel: 'PERCEPTION',
+    leftValue: '1yr Maturity',
+    rightLabel: 'REALITY',
+    rightValue: 'Systemic Trap',
+    summary: "The $CATANA incident proves age is not security. One entity bought at 500k and dumped at 20M after a year. Biological eyes saw 'Maturity'; VIGIL sees 'Concentration Risk'. We map the dominant entity before you follow the chart.",
+    statusCode: 'LIQUIDITY_EXTORTION_RISK',
+    accent: 'RED'
+  },
+  {
+    id: 'RETINAL_AUTOPSY',
+    label: 'TWEET 14: RETINAL AUTOPSY',
+    layout: 'RETINAL_AUTOPSY',
+    title: 'THE RETINA IS A \n HALLUCINATION.',
+    sub: 'SACCADIC EXPLOIT // X-VG-14',
+    leftLabel: 'PERCEPTION',
+    leftValue: 'Edge Verification',
+    rightLabel: 'REALITY',
+    rightValue: 'Intent Mismatch',
+    summary: 'In the 12ms it takes to "verify" an address, your brain only captures the edges. The adversary owns the 36-character gap in the middle. Your eyes are a hallucination engine; VIGIL is the validator.',
+    statusCode: 'INTENT_MISMATCH_DETECTED',
+    accent: 'RED'
+  },
   {
     id: 'SOL_15B_SURGE',
     label: 'MILESTONE: $15B STABLE SURGE',
@@ -97,11 +128,9 @@ const BrandBlock = ({ color = 'white' }: { color?: string }) => (
 
 const LatencyDiagram: React.FC<{ accentColor: string }> = ({ accentColor }) => (
   <div className="w-full py-8 px-10 bg-black/40 border border-zinc-900 rounded-[3rem] relative overflow-hidden group">
-    {/* Engineering Grid Backdrop */}
-    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:32px_32px]" />
+    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:32px_32px]" />
     
     <div className="relative z-10 space-y-10">
-      {/* 0ms - 20ms Timeline Ruler */}
       <div className="flex justify-between items-center px-2">
          {[0, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20].map((ms, i) => (
            <div key={i} className="flex flex-col items-center gap-2">
@@ -112,41 +141,23 @@ const LatencyDiagram: React.FC<{ accentColor: string }> = ({ accentColor }) => (
       </div>
 
       <div className="relative h-20 bg-zinc-950 border border-zinc-900 rounded-2xl overflow-hidden shadow-inner">
-        {/* The 16.6ms Block (Biological Limit) */}
-        <div 
-          className="absolute top-0 bottom-0 left-0 bg-zinc-900/50 border-r border-zinc-700" 
-          style={{ width: '83%' }} // 16.6 is 83% of 20
-        >
+        <div className="absolute top-0 bottom-0 left-0 bg-zinc-900/50 border-r border-zinc-700" style={{ width: '83%' }}>
           <div className="absolute top-3 right-6 text-[10px] font-black text-zinc-400 uppercase tracking-widest italic px-2">
             [BIOLOGICAL_LIMIT // 60Hz_REFRESH]
           </div>
         </div>
 
-        {/* The 12ms Benchmark (VIGIL Performance) */}
-        <div 
-          className="absolute top-0 bottom-0 left-0 transition-all duration-1000 ease-out border-r-2" 
-          style={{ width: '60%', borderColor: accentColor, boxShadow: `0 0 40px ${accentColor}44` }}
-        >
-          {/* Intersection Reticle */}
+        <div className="absolute top-0 bottom-0 left-0 transition-all duration-1000 ease-out border-r-2" style={{ width: '60%', borderColor: accentColor, boxShadow: `0 0 40px ${accentColor}44` }}>
           <div className="absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-2xl z-20">
             <Zap size={20} className="text-black fill-current" />
           </div>
-          
           <div className="absolute bottom-4 right-6 text-[10px] font-black uppercase tracking-widest italic px-2" style={{ color: accentColor }}>
             [VIGIL_INTERCEPTION_POINT]
           </div>
-
-          {/* Signal Trail */}
-          <div 
-             className="absolute top-0 bottom-0 left-0 right-0 opacity-20"
-             style={{ background: `linear-gradient(90deg, transparent, ${accentColor})` }}
-          />
+          <div className="absolute top-0 bottom-0 left-0 right-0 opacity-20" style={{ background: `linear-gradient(90deg, transparent, ${accentColor})` }} />
         </div>
 
-        {/* The 4.6ms Advantage Void */}
-        <div 
-          className="absolute top-0 bottom-0 left-[60%] w-[23%] bg-emerald-500/5 flex items-center justify-center border-l border-dashed border-zinc-800"
-        >
+        <div className="absolute top-0 bottom-0 left-[60%] w-[23%] bg-emerald-500/5 flex items-center justify-center border-l border-dashed border-zinc-800">
            <span className="text-[10px] font-black text-emerald-500/40 uppercase tracking-widest animate-pulse">ADVERSARY_VOID: 4.6ms</span>
         </div>
       </div>
@@ -224,7 +235,6 @@ const TacticalContainer: React.FC<TacticalContainerProps> = ({ children, classNa
         {children}
       </div>
       
-      {/* Resizer Handle */}
       <div 
         onMouseDown={onMouseDown}
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-4 cursor-ns-resize flex flex-col items-center justify-center gap-0.5 opacity-0 group-hover/tactical:opacity-100 transition-opacity z-[100]"
@@ -303,10 +313,118 @@ export const SocialIntelligenceLab: React.FC = () => {
 
   const renderLayoutContent = () => {
     switch (activeLayout) {
+      case 'RETINAL_AUTOPSY':
+        return (
+          <div className="relative z-10 flex flex-col h-full animate-in fade-in duration-1000">
+             <div className="flex justify-between items-start mb-8 shrink-0">
+                <div className="space-y-4">
+                   <div className="px-6 py-2 bg-red-600/10 border border-red-500/30 rounded-lg inline-block">
+                      <span className="text-[14px] font-black text-red-500 uppercase tracking-widest">{sub}</span>
+                   </div>
+                   <h2 className="text-[7.5rem] font-black text-white italic uppercase tracking-tighter leading-[0.8] whitespace-pre-line">
+                      {title}
+                   </h2>
+                </div>
+                <div className="scale-[0.8] origin-top-right">
+                   <BrandBlock color="white" />
+                </div>
+             </div>
+
+             <div className="grid grid-cols-2 gap-12 flex-1 items-stretch min-h-0">
+                {/* PERCEPTION SIDE */}
+                <div className="relative flex flex-col bg-zinc-950 border border-zinc-900 rounded-[3.5rem] overflow-hidden group/side">
+                   <div className="p-8 border-b border-zinc-900 flex items-center justify-between bg-zinc-900/30">
+                      <div className="flex items-center gap-4">
+                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
+                            <Eye size={16} />
+                         </div>
+                         <span className="text-[16px] font-black text-zinc-400 uppercase tracking-[0.4em]">{leftLabel}</span>
+                      </div>
+                      <TechLabel text="BIOLOGICAL_INPUT" color="zinc" />
+                   </div>
+                   <div className="flex-1 flex flex-col items-center justify-center p-12 text-center space-y-10">
+                      <div className="space-y-6 w-full">
+                         <div className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">{leftLabel === 'SACCADIC_SKIP' || leftValue === '1yr Maturity' ? 'Cognitive Shortcut Observed' : 'Cognitive Capture Active'}</div>
+                         <div className="p-10 bg-black border border-zinc-900 rounded-[2.5rem] font-mono text-3xl tracking-tighter flex items-center justify-center gap-2">
+                            {leftValue === 'Moonshot Hype' ? (
+                                <span className="text-emerald-500 font-black shadow-[0_0_20px_rgba(16,185,129,0.3)]">MOONSHOT_HALLUCINATION</span>
+                            ) : leftValue === '1yr Maturity' ? (
+                                <span className="text-emerald-500 font-black shadow-[0_0_20px_rgba(16,185,129,0.3)]">MATURE_SAFE_SIGNAL</span>
+                            ) : (
+                                <>
+                                    <span className="text-emerald-500 font-black shadow-[0_0_20px_rgba(16,185,129,0.3)]">Ab1C</span>
+                                    <span className="text-zinc-900 blur-md opacity-20 px-4">92kLp6mX9wR7yT5vB4nQ8jK3</span>
+                                    <span className="text-emerald-500 font-black shadow-[0_0_20px_rgba(16,185,129,0.3)]">Zz90</span>
+                                </>
+                            )}
+                         </div>
+                         <p className="text-4xl text-zinc-600 font-black uppercase italic px-6 leading-[1.1]">
+                            {leftValue === 'Moonshot Hype' ? '"Retina fixed on candle velocity. Scrutiny threshold: bypassed."' : leftValue === '1yr Maturity' ? '"The brain assumes safety based on provenance, skipping structural verification."' : '"The eye prioritized edge anchors, assuming historical parity."'}
+                         </p>
+                      </div>
+                   </div>
+                </div>
+
+                {/* REALITY SIDE */}
+                <div className="relative flex flex-col bg-zinc-950 border border-red-900/40 rounded-[3.5rem] overflow-hidden group/side">
+                   <div className="p-8 border-b border-red-900/20 flex items-center justify-between bg-red-900/5">
+                      <div className="flex items-center gap-4">
+                         <div className="w-8 h-8 rounded-lg bg-red-600/10 border border-red-500/30 flex items-center justify-center text-red-500">
+                            <Skull size={16} />
+                         </div>
+                         <span className="text-[16px] font-black text-red-500 uppercase tracking-[0.4em]">{rightLabel}</span>
+                      </div>
+                      <TechLabel text="FORENSIC_TRUTH" color="red" />
+                   </div>
+                   <div className="flex-1 flex flex-col items-center justify-center p-12 text-center space-y-10">
+                      <div className="space-y-6 w-full">
+                         <div className="text-[10px] font-black text-red-700 uppercase tracking-widest animate-pulse">
+                            {rightValue === 'Bundled Supply' || rightValue === 'Systemic Trap' ? 'Supply Manipulation Analysis' : 'Poison Mimic Identified'}
+                         </div>
+                         <div className="p-10 bg-black border border-red-900/30 rounded-[2.5rem] font-mono text-3xl tracking-tighter flex items-center justify-center gap-2 animate-haptic-shake">
+                            {rightValue === 'Bundled Supply' ? (
+                                <span className="text-red-500 font-black shadow-[0_0_30px_rgba(239,68,68,0.5)]">92% CLUSTERED BUNDLE</span>
+                            ) : rightValue === 'Systemic Trap' ? (
+                                <span className="text-red-500 font-black shadow-[0_0_30px_rgba(239,68,68,0.5)]">SINGLE ENTITY EXIT</span>
+                            ) : (
+                                <>
+                                    <span className="text-zinc-500">Ab1C</span>
+                                    <span className="text-red-500 font-black shadow-[0_0_30px_rgba(239,68,68,0.5)] bg-red-500/5 px-4 rounded-lg">000000X99120817</span>
+                                    <span className="text-zinc-500">Zz90</span>
+                                </>
+                            )}
+                         </div>
+                         <p className="text-4xl text-red-400 font-black uppercase italic px-6 leading-[1.1]">
+                            {rightValue === 'Bundled Supply' ? '"Mother-Wallet identified. Multi-threaded funding loop neutralised."' : rightValue === 'Systemic Trap' ? '"Insider holding exceeds liquidity floor. Age is a mask for manipulation."' : '"Cryptography is correct. Intent is mismatched."'}
+                         </p>
+                      </div>
+                   </div>
+                   
+                   {/* INTENT MISMATCH STAMP */}
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-12deg] z-30 pointer-events-none opacity-0 group-hover/side:opacity-100 transition-opacity duration-500">
+                      <div className="px-12 py-8 border-[8px] border-red-600 text-red-600 rounded-[2rem] font-black text-6xl uppercase tracking-tighter shadow-[0_0_80px_rgba(239,68,68,0.4)] bg-black/60 backdrop-blur-md">
+                         [!] {rightValue === 'Bundled Supply' || rightValue === 'Systemic Trap' ? 'CONCENTRATION_TRAP' : 'INTENT_MISMATCH'}
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <div className="mt-8 pt-8 border-t border-zinc-900 flex justify-between items-end shrink-0">
+                <div className="flex-1 max-w-4xl">
+                   <p className="text-4xl text-zinc-500 font-medium italic leading-relaxed">
+                      "{summary}"
+                   </p>
+                </div>
+                <div className="text-right ml-12">
+                   <div className="text-[11px] font-black text-zinc-700 uppercase tracking-[0.6em] mb-1">VIG_FORENSIC_UNIT</div>
+                   <div className="text-2xl font-black text-red-600 uppercase italic tracking-widest">{statusCode}</div>
+                </div>
+             </div>
+          </div>
+        );
       case 'BENCHMARK':
         return (
           <div className="relative z-10 flex flex-col h-full justify-center space-y-10 animate-in fade-in duration-1000">
-             {/* Logo Re-positioned to prevent pushing title down */}
              <div className="absolute top-0 right-0 scale-[0.75] origin-top-right">
                 <BrandBlock color="white" />
              </div>
@@ -581,13 +699,13 @@ export const SocialIntelligenceLab: React.FC = () => {
                       <div className="space-y-1.5">
                          <label className="text-[9px] font-black text-zinc-700 uppercase tracking-widest ml-1">Layout</label>
                          <div className="grid grid-cols-2 gap-2">
-                            {(['COMPARISON', 'MANIFESTO', 'ARCHITECTURE', 'BENCHMARK'] as LayoutType[]).map(l => (
+                            {(['COMPARISON', 'MANIFESTO', 'ARCHITECTURE', 'BENCHMARK', 'RETINAL_AUTOPSY'] as LayoutType[]).map(l => (
                               <button 
                                 key={l}
                                 onClick={() => setActiveLayout(l)}
                                 className={`py-2 px-1 rounded-lg border text-[8px] font-black uppercase tracking-all ${activeLayout === l ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-black border-zinc-900 text-zinc-600'}`}
                               >
-                                {l}
+                                {l.replace('_', ' ')}
                               </button>
                             ))}
                          </div>

@@ -11,7 +11,7 @@ export interface SolscanTransaction {
   amount: string;
   token: string;
   isPoison?: boolean;
-  type: 'TRUSTED' | 'POISON' | 'PHISHING' | 'DUST' | 'NEW' | 'SIMILARITY' | 'MINT' | 'CLIPBOARD' | 'SPOOF' | 'MARKET_INTEL';
+  type: 'TRUSTED' | 'POISON' | 'PHISHING' | 'DUST' | 'NEW' | 'SIMILARITY' | 'MINT' | 'CLIPBOARD' | 'SPOOF' | 'MARKET_INTEL' | 'ACCUMULATION_TRAP';
 }
 
 interface SolscanMirrorProps {
@@ -23,6 +23,7 @@ const TRANSACTIONS: SolscanTransaction[] = [
   { id: '1', slot: '312882109', timestamp: '12s ago', from: '6vX9f72Lp6mX9wR7yT5vB4nQ8jK3mZzM1', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '42.00', token: 'SOL', type: 'TRUSTED' },
   { id: '2', slot: '312882105', timestamp: '44s ago', from: 'Ab1C00000000000000000000000000Zz90', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '1,200', token: 'USDC', type: 'POISON' },
   { id: '3', slot: '312882098', timestamp: '2m ago', from: 'Dust99kLp6mX9wR7yT5vB4nQ8jK3mZzDust', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '0.000001', token: 'SOL', type: 'DUST' },
+  { id: '10', slot: '312882092', timestamp: '3m ago', from: 'VigAccNodeX772199291120038xPoisoN', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '10,000', token: 'DOGE2.0', type: 'ACCUMULATION_TRAP' },
   { id: '7', slot: '312882080', timestamp: '4m ago', from: 'Rug44DeployerX992811x772199291120038', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '100M', token: 'RUG', type: 'MARKET_INTEL' },
   { id: '4', slot: '312882087', timestamp: '5m ago', from: 'EPjFW33rdLH2QD6LksXY33vMRfGct1grTparXMQ7fgc3', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '5,000', token: 'USDT', type: 'MINT' },
   { id: '5', slot: '312882076', timestamp: '8m ago', from: 'EyeS53e56c74808EEA832862AED571C56dF4C3C5fD9E', to: 'Vig1L1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1iG1i', amount: '0.15', token: 'SOL', type: 'SPOOF' },
@@ -138,7 +139,7 @@ export const SolscanMirror: React.FC<SolscanMirrorProps> = ({ onCopy, activeType
               </thead>
               <tbody className="divide-y divide-zinc-800/50">
                 {TRANSACTIONS.map((tx) => {
-                  const isMarketIntel = tx.type === 'MARKET_INTEL';
+                  const isMarketIntel = tx.type === 'MARKET_INTEL' || tx.type === 'ACCUMULATION_TRAP';
                   const isHighlighted = activeType === tx.type || (intelCA === tx.from);
                   
                   return (
